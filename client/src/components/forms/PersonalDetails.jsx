@@ -103,6 +103,7 @@ const PersonalDetailsForm = ({ onNext }) => {
         langHindiWrite: empData.data.langHindiWrite || "",
         mobile: empData.data.mobile || "",
         motherTongue: empData.data.motherTongue || "",
+        pwd: empData.data.pwd || "",
         religion: empData.data.religion || "",
         state: empData.data.state || "",
         subCategory: empData.data.subCategory || "",

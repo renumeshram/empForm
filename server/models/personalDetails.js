@@ -29,7 +29,7 @@ const personalDetailsSchema = new mongoose.Schema({
   langHindiRead: Boolean,
   langHindiWrite: Boolean,
   langHindiSpeak: Boolean,
-  pwDisability: String,
+  pwd: String,
 });
 
 const PersonalDetails = mongoose.model('PersonalDetails', personalDetailsSchema);
