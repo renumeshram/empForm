@@ -6,9 +6,8 @@ import handlers from '../controller/empRegLogin.js';
 import validateReg from '../middleware/validateRegistration.js';
 import personalDetailsHandler from '../controller/personalDetails.js';
 import { verifyToken } from '../middleware/authenticateLogin.js';
-import fetchController from '../controller/fetchDetails.js'
+import {fetchPersonalDetails, fetchEducation, fetchFamily } from '../controller/fetchDetails.js'
 import educationDetailsHandler from '../controller/educationDetails.js';
-const {fetchPersonalDetails } = fetchController;
 
 const  {registrationHandler, loginHandler} = handlers;
 
@@ -25,5 +24,9 @@ router.post('/personal',verifyToken, personalDetailsHandler)
 router.post('/education', verifyToken, educationDetailsHandler)
 
 router.get('/personalDetails',verifyToken, fetchPersonalDetails)
+
+router.get('/educationDetails',verifyToken, fetchEducation)
+
+router.get('/familyDetails',verifyToken, fetchFamily)
 
 export default router;

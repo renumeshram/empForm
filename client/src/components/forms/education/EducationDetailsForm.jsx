@@ -3,9 +3,9 @@ import { useForm, useFieldArray } from "react-hook-form";
 import EducationEntry from "./EducationEntry";
 import { saveSectionData } from "../../../services/formApi";
 import { useAuth } from "../../../context/AuthContext";
-// useEffect(()=>{
-
-// })
+import axios from "axios";
+import { useEmployeeData } from "../../../context/EmployeeDataContext";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
   const {
@@ -15,36 +15,48 @@ const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
     watch,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     defaultValues: {
       education: [],
     },
   });
 
-  const {token, empData} = useAuth()
+  const { token, empData, fetchData } = useAuth();
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "education",
   });
 
-  const onSubmit = async(data) => {
-    try{
+  const {educationData} = useEmployeeData();
+
+  useEffect(() => {
+    if (educationData) {
+      Object.entries(educationData.eData).forEach(([key, value]) => {
+        setValue(key, value); // will only work for fields that are registered
+      });
+    }
+  }, [empData, setValue]);
+
+  const onSubmit = async (data) => {
+    try {
       const education = data.education;
-      const hasSaved = await saveSectionData("educationDetails", {education}, token)
-      
-      if(hasSaved){
+      const hasSaved = await saveSectionData(
+        "educationDetails",
+        { education },
+        token
+      );
+
+      if (hasSaved) {
         onNext(data.education);
         console.log("Education Data:", data.education);
-  
-      }else{
-        console.error("Failed to save Education details")
+      } else {
+        console.error("Failed to save Education details");
       }
-    }catch(error){
+    } catch (error) {
       console.error("Error in saving Education details:", error);
-      
     }
-
   };
 
   return (
@@ -73,7 +85,9 @@ const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
         + Add Education
       </button>
 
-      {fields.length === 0 && <p className="mb-4 text-gray-600">No education added yet.</p>}
+      {fields.length === 0 && (
+        <p className="mb-4 text-gray-600">No education added yet.</p>
+      )}
 
       {fields.map((item, index) => (
         <div

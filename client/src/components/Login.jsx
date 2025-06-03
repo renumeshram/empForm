@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext.jsx";
+import { useEmployeeData } from "../context/EmployeeDataContext.jsx";
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +8,14 @@ import { toast } from "react-toastify";
 const Login = () => {
   const { login, fetchData } = useAuth();
   const navigate = useNavigate();
+
+  const {
+    updateEducationData,
+    updatePersonalData,
+    updateFamilyData,
+    updateAddressData,
+    updateWorkData,
+  } = useEmployeeData();
 
   const [formData, setFormData] = useState({
     sapId: "",
@@ -27,6 +36,7 @@ const Login = () => {
       const res = await axios.post(`${apiUrl}/login`, formData);
       const { token, user } = res.data;
       console.log("🚀 ~ handleSubmit ~ token:", token);
+      console.log("🚀 ~ handleSubmit ~ res.data:", res.data)
       console.log("🚀 ~ handleSubmit ~ user:", user);
 
       login(token, user);
@@ -34,18 +44,65 @@ const Login = () => {
         toast.success(res?.data?.msg || "Login successful!");
         toast.success("Getting employee's data...");
 
-        // load existing employee's data
-        const result = await axios.get(`${apiUrl}/personalDetails`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        // console.log("🚀 ~ handleSubmit ~ result:", result)
-      fetchData(result?.data)
-      toast.success("Fetched Data!");
-    }
-    navigate("/form");
+        const [personal, education, family, address, work] = await Promise.all([
+          axios.get(`${apiUrl}/personalDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          axios.get(`${apiUrl}/educationDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          axios.get(`${apiUrl}/familyDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          // axios.get(`${apiUrl}/addressDetails`, {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // }),
+          // axios.get(`${apiUrl}/workDetails`, {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // }),
+        ]);
 
+        updatePersonalData(personal.data);
+        updateEducationData(education.data);
+        navigate("/form");
+        // updateFamilyData(family.data);
+        // updateAddressData(address.data);
+        // updateWorkData(work.data);
+
+
+        // load existing employee's data
+        // const result = await axios.get(`${apiUrl}/personalDetails`, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        // // console.log("🚀 ~ handleSubmit ~ result:", result)
+        // // fetchData(result?.data);
+        // const personalData = result?.data;
+
+        // const eduResult = await axios.get(`${apiUrl}/educationDetails`, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        // const educationData = eduResult?.data;
+
+        // const combineData = {...personalData, educationData}
+
+        // fetchData(combineData);
+        toast.success("Fetched Data!");
+      }
+      
 
       // const successMsg = res?.data?.msg || "Login successful!"
       // setResult(successMsg);

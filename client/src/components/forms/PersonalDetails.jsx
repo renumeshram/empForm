@@ -5,6 +5,7 @@ import * as yup from "yup";
 import languageOptions from "../../constants/languageOptions";
 import { saveSectionData } from "../../services/formApi";
 import { useAuth } from "../../context/AuthContext";
+import { useEmployeeData } from "../../context/EmployeeDataContext";
 
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -56,6 +57,7 @@ const PersonalDetailsForm = ({ onNext }) => {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -63,6 +65,8 @@ const PersonalDetailsForm = ({ onNext }) => {
 
   const dob = watch("dob");
   const motherTongue = watch("motherTongue");
+
+  const {personalData, updateChangeInPersonalData} = useEmployeeData()
 
   // useEffect(()=>{
   //   if (empData && empData.data) {
@@ -88,39 +92,52 @@ const PersonalDetailsForm = ({ onNext }) => {
   }, [dob, age]);
 
   useEffect(() => {
-    if (empData && empData.pData) {
-      const formValues = getInitialFormValues(empData);
+    console.log(personalData)
+    if (personalData) {
+      console.log("Yes here it is....")
+      const formValues = getInitialFormValues(personalData);
       reset(formValues);
     }
-  }, [empData, reset]);
+  }, [personalData, reset]);
 
-  const getInitialFormValues = (empData) => {
-    if (!empData || !empData.pData) return {};
+  // useEffect(() => {
+  //     if (personalData && personalData.pdata && personalData.emp) {
+  //       const combinedData = {...personalData.pdata, ...personalData.emp}
+
+  //       Object.entries(combinedData).forEach(([key, value]) => {
+  //         setValue(key, value); // will only work for fields that are registered
+  //       });
+  //     }
+  //   }, [personalData, setValue]);
+
+  const getInitialFormValues = (personalData) => {
+    if (!personalData?.pData || !personalData.emp) return {};
+
 
     return {
-      title: empData.pData.title || "",
-      firstName: empData.pData.firstName || "",
-      lastName: empData.pData.lastName || "",
-      sapId: empData.emp?.sapId || "",
-      adhaarId: empData.pData.adhaarId || "",
-      birthplace: empData.pData.birthplace || "",
-      category: empData.pData.category || "",
-      dob: empData.pData.dob || "",
-      email: empData.emp?.email || "",
-      exServiceman: empData.pData.exServiceman || "",
-      gender: empData.pData.gender || "",
-      hindiKnowledge: empData.pData.hindiKnowledge || "",
-      idMark1: empData.pData.idMark1 || "",
-      idMark2: empData.pData.idMark2 || "",
-      langHindiRead: empData.pData.langHindiRead || false,
-      langHindiSpeak: empData.pData.langHindiSpeak || false,
-      langHindiWrite: empData.pData.langHindiWrite || false,
-      mobile: empData.pData.mobile || "",
-      motherTongue: empData.pData.motherTongue || "",
-      pwd: empData.pData.pwd || "",
-      religion: empData.pData.religion || "",
-      state: empData.pData.state || "",
-      subCategory: empData.pData.subCategory || "",
+      title: personalData.pData.title || "",
+      firstName: personalData.pData.firstName || "",
+      lastName: personalData.pData.lastName || "",
+      sapId: personalData.emp.sapId || "",
+      adhaarId: personalData.pData.adhaarId || "",
+      birthplace: personalData.pData.birthplace || "",
+      category: personalData.pData.category || "",
+      dob: personalData.pData.dob || "",
+      email: personalData.emp.email || "",
+      exServiceman: personalData.pData.exServiceman || "",
+      gender: personalData.pData.gender || "",
+      hindiKnowledge: personalData.pData.hindiKnowledge || "",
+      idMark1: personalData.pData.idMark1 || "",
+      idMark2: personalData.pData.idMark2 || "",
+      langHindiRead: personalData.pData.langHindiRead || false,
+      langHindiSpeak: personalData.pData.langHindiSpeak || false,
+      langHindiWrite: personalData.pData.langHindiWrite || false,
+      mobile: personalData.pData.mobile || "",
+      motherTongue: personalData.pData.motherTongue || "",
+      pwd: personalData.pData.pwd || "",
+      religion: personalData.pData.religion || "",
+      state: personalData.pData.state || "",
+      subCategory: personalData.pData.subCategory || "",
     };
   };
 
@@ -130,6 +147,7 @@ const PersonalDetailsForm = ({ onNext }) => {
 
       if (hasSaved) {
         onNext(data);
+        updateChangeInPersonalData(data)
         console.log("Section 1 Data", data);
       } else {
         console.error("Failed to save Personal Details");
