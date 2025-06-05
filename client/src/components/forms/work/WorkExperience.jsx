@@ -1,11 +1,19 @@
 import React from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import EmployerForm from "./EmployerForm";
+import { saveSectionData } from "../../../services/formApi";
+import { useAuth } from "../../../context/AuthContext";
+import { useEmployeeData } from "../../../context/EmployeeDataContext";
+import { v4 as uuidv4} from "uuid";
 
 const WorkExperienceForm = ({ onNext }) => {
+  const {token} = useAuth()
+
+  const {workData, updateWorkData } =useEmployeeData();
+
   const methods = useForm({
     defaultValues: {
-      employers: [],
+      experiences: workData?.wData?.experiences || [],
     },
   });
 
@@ -13,11 +21,31 @@ const WorkExperienceForm = ({ onNext }) => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "employers",
+    name: "experiences",
   });
 
-  const onSubmit = (data) => {
-    onNext(data.employers);
+  const onSubmit = async(data) => {
+
+    try{
+
+      // const payload = {
+      //   experiences: data.experiences
+      // }
+
+      updateWorkData({wData: {experiences: data.experiences}});
+  
+      const success =  await saveSectionData("workExperience", data.experiences, token);
+  
+      if(success){
+        onNext(data.experiences);
+        
+      }
+    }catch(error){
+      console.error("Error in saving experiences", error)
+    }
+
+
+
   };
 
   return (
@@ -40,7 +68,21 @@ const WorkExperienceForm = ({ onNext }) => {
         {fields.length < 5 && (
           <button
             type="button"
-            onClick={() => append({})}
+            onClick={() => append({
+              companyName: "",
+                city: "",
+                designation: "",
+                greenfield: "",
+                grossSalary: "",
+                industry: "",
+                numberOfMonths: "",
+                numberOfYears: "",
+                reasonForLeaving: "",
+                relievingDate: "",
+                scaleOnLeaving: "",
+                startDate: "",
+                wId : uuidv4(),
+            })}
             className="px-4 py-2 bg-green-600 text-white rounded"
           >
             Add Employer

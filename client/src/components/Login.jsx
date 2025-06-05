@@ -44,7 +44,7 @@ const Login = () => {
         toast.success(res?.data?.msg || "Login successful!");
         toast.success("Getting employee's data...");
 
-        const [personal, education, family, address, work] = await Promise.all([
+        const [personal, education,work, family, address ] = await Promise.all([
           axios.get(`${apiUrl}/personalDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,29 +55,30 @@ const Login = () => {
               Authorization: `Bearer ${token}`,
             },
           }),
-          axios.get(`${apiUrl}/familyDetails`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
+          // axios.get(`${apiUrl}/familyDetails`, {
+          //   headers: {
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          // }),
           // axios.get(`${apiUrl}/addressDetails`, {
           //   headers: {
           //     Authorization: `Bearer ${token}`,
           //   },
           // }),
-          // axios.get(`${apiUrl}/workDetails`, {
-          //   headers: {
-          //     Authorization: `Bearer ${token}`,
-          //   },
-          // }),
+          axios.get(`${apiUrl}/workDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]);
+        console.log(work)
 
         updatePersonalData(personal.data);
         updateEducationData(education.data);
+        updateWorkData(work.data);
         navigate("/form");
         // updateFamilyData(family.data);
         // updateAddressData(address.data);
-        // updateWorkData(work.data);
 
 
         // load existing employee's data

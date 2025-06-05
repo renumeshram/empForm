@@ -82,8 +82,31 @@ const fetchFamily = async(req, res)=>{
 const fetchAddress = ()=>{
 
 }
-const fetchWork = ()=>{
+const fetchWork = async(req, res)=>{
+    try{
 
+        const employeeId = req.user.id
+        console.log("🚀 ~ fetchWork ~ employeeId:", employeeId)
+        
+    
+        const workData = await WorkExperience.findOne({ employeeId });
+        // const employeeData = await Employee.findOne({_id: employeeId });
+        console.log("🚀 ~ fetchWork ~ workData:", workData)
+        
+    
+        return res.status(200).json({
+            wData: workData,
+            success: true,
+            msg: "Work experience Data successfully fetched from DB",
+        });
+    }catch(error){
+        console.log("🚀 ~ fetchWork ~ error:", error)
+        
+        res.status(500).json({
+            success: false,
+            msg: "Error in fetching data"
+        })
+    }
 }
 export {
     fetchPersonalDetails,

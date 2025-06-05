@@ -20,16 +20,16 @@ const EmployerForm = ({ index, onRemove }) => {
       <h4 className="font-semibold mb-3">Employer {index + 1}</h4>
 
       <input
-        {...register(`employers.${index}.name`, { required: "Employer name is required" })}
+        {...register(`experiences.${index}.companyName`, { required: "Employer name is required" })}
         placeholder="Employer's Name"
         className="w-full mb-2 p-2 border rounded"
       />
-      {errors.employers?.[index]?.name && (
-        <p className="text-red-600 text-sm">{errors.employers[index].name.message}</p>
+      {errors.experiences?.[index]?.name && (
+        <p className="text-red-600 text-sm">{errors.experiences[index].name.message}</p>
       )}
 
       <input
-        {...register(`employers.${index}.city`)}
+        {...register(`experiences.${index}.city`)}
         placeholder="City"
         className="w-full mb-2 p-2 border rounded"
       />
@@ -39,7 +39,7 @@ const EmployerForm = ({ index, onRemove }) => {
           <label>Start Date</label>
           <input
             type="date"
-            {...register(`employers.${index}.startDate`)}
+            {...register(`experiences.${index}.startDate`)}
             className="p-2 border rounded"
           />
         </div>
@@ -48,14 +48,14 @@ const EmployerForm = ({ index, onRemove }) => {
           <label>Relieving Date</label>
           <input
             type="date"
-            {...register(`employers.${index}.relievingDate`)}
+            {...register(`experiences.${index}.relievingDate`)}
             className="p-2 border rounded"
           />
         </div>
       </div>
 
       <select
-        {...register(`employers.${index}.industry`)}
+        {...register(`experiences.${index}.industry`)}
         className="w-full mb-2 p-2 border rounded"
       >
         <option value="">Select Industry</option>
@@ -67,45 +67,45 @@ const EmployerForm = ({ index, onRemove }) => {
       </select>
 
       <input
-        {...register(`employers.${index}.designation`)}
+        {...register(`experiences.${index}.designation`)}
         placeholder="Designation"
         className="w-full mb-2 p-2 border rounded"
       />
 
       <input
-        {...register(`employers.${index}.scaleOnLeaving`)}
+        {...register(`experiences.${index}.scaleOnLeaving`)}
         placeholder="Scale on Leaving"
         className="w-full mb-2 p-2 border rounded"
       />
 
       <input
-        {...register(`employers.${index}.reasonForLeaving`)}
+        {...register(`experiences.${index}.reasonForLeaving`)}
         placeholder="Reason for Leaving"
         className="w-full mb-2 p-2 border rounded"
       />
 
       <input
-        {...register(`employers.${index}.grossSalary`)}
+        {...register(`experiences.${index}.grossSalary`)}
         placeholder="Gross Salary"
         type="number"
         className="w-full mb-2 p-2 border rounded"
       />
 
       <input
-        {...register(`employers.${index}.greenfield`)}
+        {...register(`experiences.${index}.greenfield`)}
         placeholder="Greenfield"
         className="w-full mb-2 p-2 border rounded"
       />
 
       <div className="flex space-x-4">
         <input
-          {...register(`employers.${index}.numberOfMonths`)}
+          {...register(`experiences.${index}.numberOfMonths`)}
           placeholder="Number of Months"
           type="number"
           className="w-1/2 p-2 border rounded"
         />
         <input
-          {...register(`employers.${index}.numberOfYears`)}
+          {...register(`experiences.${index}.numberOfYears`)}
           placeholder="Number of Years"
           type="number"
           className="w-1/2 p-2 border rounded"
