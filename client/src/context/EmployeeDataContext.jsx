@@ -77,6 +77,31 @@ export const EmployeeDataProvider =({children}) =>{
   });
 };
 
+const updateChangeInEducationData = (updatedItem) => {
+  setEducationData((prev) => {
+    const existingItems = prev?.eData?.education || [];
+
+    const itemExists = existingItems.some((item) => item.eId === updatedItem.eId);
+
+    const updatedEducation = itemExists
+      ? existingItems.map((item) =>
+          item.eId === updatedItem.eId ? updatedItem : item
+        )
+      : [...existingItems, updatedItem]; // <-- Add new item here
+
+    const updated = {
+      ...prev,
+      eData: {
+        ...prev.eData,
+        education: updatedEducation,
+      },
+    };
+
+    sessionStorage.setItem("educationData", JSON.stringify(updated));
+    return updated;
+  });
+};
+
 
 
   return (
@@ -95,6 +120,7 @@ export const EmployeeDataProvider =({children}) =>{
         workData,
         updateWorkData,
         updateChangeInPersonalData,
+        updateChangeInEducationData,
       }}
     >
         {children}

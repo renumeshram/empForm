@@ -22,18 +22,20 @@ const MultiStepForm = () => {
 
     // await saveSectionData(stepName, stepData);
 
-    if(currentStep === lastStepIndex){
-      handleSubmit({...formData, [stepName]: stepData});
-    }else{
-      setStep((prev)=> prev + 1)
-    }
+   setIsSubmitted(true); // ✅ Finish
 
     // setIsSubmitted(true);
   };
 
   const handleNext = (stepName, stepData) => {
     setFormData((prev) => ({ ...prev, [stepName]: stepData }));
-    setStep((prev) => prev + 1);
+    // setStep((prev) => prev + 1);
+
+    if(currentStep === lastStepIndex){
+      handleSubmit({...formData, [stepName]: stepData});
+    }else{
+      setStep((prev)=> prev + 1)
+    }
   };
 
   const handleDownloadForm = () => {

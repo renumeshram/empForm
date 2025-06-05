@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import EducationEntry from "./EducationEntry";
 import { saveSectionData } from "../../../services/formApi";
 import { useAuth } from "../../../context/AuthContext";
-import axios from "axios";
+import {v4 as uuidv4} from 'uuid';
 import { useEmployeeData } from "../../../context/EmployeeDataContext";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -29,35 +29,97 @@ const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
     name: "education",
   });
 
-  const {educationData} = useEmployeeData();
+  const {educationData, updateChangeInEducationData } = useEmployeeData();
 
-  useEffect(() => {
-    if (educationData) {
-      Object.entries(educationData.eData).forEach(([key, value]) => {
-        setValue(key, value); // will only work for fields that are registered
-      });
-    }
-  }, [empData, setValue]);
+useEffect(() => {
+  if (educationData?.eData?.education?.length > 0) {
+    reset({ education: [] }); // ✅ Clear any stale form state
 
-  const onSubmit = async (data) => {
-    try {
-      const education = data.education;
-      const hasSaved = await saveSectionData(
-        "educationDetails",
-        { education },
-        token
-      );
+    educationData.eData.education.forEach((edu) => {
+      append(edu); // ✅ Correctly populates FieldArray
+    });
+  }
+}, [educationData, append, reset]);
 
+
+  // const onSubmit = async (data) => {
+  //   try {
+  //     const education = data.education;
+  //     const hasSaved = await saveSectionData(
+  //       "educationDetails",
+  //       { education },
+  //       token
+  //     );
+
+  //     if (hasSaved) {
+  //       onNext(data.education);
+  //       console.log("Education Data:", data.education);
+  //     } else {
+  //       console.error("Failed to save Education details");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in saving Education details:", error);
+  //   }
+  // };
+
+// useEffect(() => {
+//   if (educationData?.eData?.education?.length > 0) {
+//     reset({ education: [] }); // Clear old form state before appending
+
+//     educationData.eData.education.forEach((edu) => {
+//       append(edu);
+//     });
+//   }
+// }, [educationData, append, reset]);
+
+
+const onSubmit = async (data) => {
+  try {
+    const currentEducation = data.education;
+    const originalEducation = educationData?.eData?.education || [];
+
+    // Detect changed or new items
+    const changedItems = currentEducation.filter((currentItem) => {
+      const originalItem = originalEducation.find((o) => o.eId === currentItem.eId);
+      return !originalItem || JSON.stringify(currentItem) !== JSON.stringify(originalItem);
+    });
+
+    // Detect deleted items
+    const deletedItems = originalEducation.filter((originalItem) => {
+      return !currentEducation.find((c) => c.eId === originalItem.eId);
+    });
+
+    if (changedItems.length === 0 && deletedItems.length === 0) {
+      console.log("No changes detected");
+      // return;
+    }else{
+
+      const payload = {
+        updated: changedItems,
+        deleted: deletedItems.map((item) => item.eId),
+      };
+  
+      const hasSaved = await saveSectionData("educationDetails", payload, token);
+  
       if (hasSaved) {
-        onNext(data.education);
-        console.log("Education Data:", data.education);
+        const change =changedItems.forEach(item => updateChangeInEducationData(item));
+        if(change){
+          console.log("Updated session data.")
+        }
+        console.log("Updated:", changedItems);
+        console.log("Deleted IDs:", deletedItems.map((d) => d.eId));
       } else {
         console.error("Failed to save Education details");
+        return;
       }
-    } catch (error) {
-      console.error("Error in saving Education details:", error);
     }
-  };
+    onNext(currentEducation); // always move to next section
+
+  } catch (error) {
+    console.error("Error saving Education details:", error);
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -79,6 +141,7 @@ const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
             passingDate: "",
             courseDetails: "",
             specialization: "",
+            eId: uuidv4(),
           })
         }
       >

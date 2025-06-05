@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
+import { v4 as uuidv4} from 'uuid';
 
 const completeEducationSchema = new mongoose.Schema({
+  eId : {
+    type: String,
+    default: uuidv4(),
+  }, //unique identifier
   educationType: String,
   instituteName: String,
   certificateType: String,
