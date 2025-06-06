@@ -2,6 +2,7 @@ import Employee from '../models/employee.js'
 import PersonalDetails from '../models/personalDetails.js'
 import EducationDetails from '../models/education.js'
 import FamilyDetails from '../models/family.js'
+import AddressDetails from '../models/address.js'
 import WorkExperience from '../models/workExperience.js'
 
 
@@ -108,10 +109,43 @@ const fetchWork = async(req, res)=>{
         })
     }
 }
+
+const fetchFinalData = async(req, res)=>{
+    try{
+
+        const employeeId = req.user.id
+        console.log("🚀 ~ fetchFinalData ~ employeeId:", employeeId)
+
+        const personalDetails = await PersonalDetails.findOne({ employeeId}).populate("employeeId");
+        const educationDetails = await EducationDetails.findOne({employeeId});
+        const workExperience = await WorkExperience.findOne({employeeId});
+        const familyDetails = await FamilyDetails.findOne({employeeId});
+        const addressDetails = await AddressDetails.findOne({employeeId});
+
+        res.status(200).json({
+            personalDetails,
+            educationDetails,
+            workExperience,
+            familyDetails,
+            addressDetails
+        })
+    }catch(error){
+        console.log("🚀 ~ fetchFinalData ~ error:", error)
+        res.status(500).json({
+            success: false,
+            msg: "Internal Server Error",
+            statusCode: 500,
+        })
+    }
+
+
+
+}
 export {
     fetchPersonalDetails,
     fetchEducation,
     fetchFamily,
     fetchAddress,
     fetchWork,
+    fetchFinalData,
 }

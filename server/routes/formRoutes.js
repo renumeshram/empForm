@@ -6,7 +6,7 @@ import handlers from '../controller/empRegLogin.js';
 import validateReg from '../middleware/validateRegistration.js';
 import personalDetailsHandler from '../controller/personalDetails.js';
 import { verifyToken } from '../middleware/authenticateLogin.js';
-import {fetchPersonalDetails, fetchEducation, fetchFamily, fetchWork } from '../controller/fetchDetails.js'
+import {fetchPersonalDetails, fetchEducation, fetchFamily, fetchWork, fetchFinalData } from '../controller/fetchDetails.js'
 import educationDetailsHandler from '../controller/educationDetails.js';
 import workExperienceHandler from '../controller/workExperiences.js';
 
@@ -33,5 +33,7 @@ router.get('/educationDetails',verifyToken, fetchEducation)
 router.get('/familyDetails',verifyToken, fetchFamily)
 
 router.get('/workDetails',verifyToken, fetchWork)
+
+router.get('/user/form-data', verifyToken, fetchFinalData)
 
 export default router;

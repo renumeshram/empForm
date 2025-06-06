@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StepTabs from "./StepTabs";
 import PersonalDetailsForm from "./forms/PersonalDetails";
 import EducationDetailsForm from "./forms/education/EducationDetailsForm";
@@ -6,9 +6,11 @@ import FamilyDetailsForm from "./forms/Family/FamilyDetailsForm";
 import AddressForm from "./forms/address/AddressForm";
 import WorkExperienceForm from "./forms/work/WorkExperience";
 import ReviewForm from "./forms/ReviewForm"; // ✅ Import ReviewForm
+import Navbar from "./Navbar";
+import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 // import { saveSectionData } from "../services/formApi";
-import Navbar from "./Navbar";
 
 const MultiStepForm = () => {
   const [currentStep, setStep] = useState(0);
@@ -16,6 +18,8 @@ const MultiStepForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const lastStepIndex = 5; // ✅ Review step added
+  const {token} = useAuth();
+
 
   const handleSubmit = async(finalData) => {
     console.log("✅ Final form submission:", finalData);
@@ -29,7 +33,6 @@ const MultiStepForm = () => {
 
   const handleNext = (stepName, stepData) => {
     setFormData((prev) => ({ ...prev, [stepName]: stepData }));
-    // setStep((prev) => prev + 1);
 
     if(currentStep === lastStepIndex){
       handleSubmit({...formData, [stepName]: stepData});
@@ -70,8 +73,9 @@ const MultiStepForm = () => {
           {currentStep === 5 && (
             <ReviewForm
               data={formData}
-              onBack={() => setStep(4)}
+              onBack={() => window.history.back()}
               onSubmit={() => handleSubmit(formData)}
+              token = {token}
             />
           )}
         </>
