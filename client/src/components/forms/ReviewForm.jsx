@@ -2,54 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { normalizeUserData } from "../../utils";
+import {
+  formatValue,
+  shouldHideField,
+  formatKey,
+} from "../../utils/formatters";
 
-
-const shouldHideField = (key) => {
-  const lowerKey = key.toLowerCase();
-
-  // Always show these IDs
-  const allowList = ["sapid",  "adhaarid"];
-
-  return (
-    key === "_id" ||
-    key === "__v" ||
-    lowerKey === "employeeid" ||
-    lowerKey === "entry" ||
-    (lowerKey.endsWith("id") && !allowList.includes(lowerKey))
-  );
-};
-
-
-
-
-
-// Format values smartly
-const formatValue = (value) => {
-  if(typeof value === "boolean"){
-    return value? "Yes" : "No";
-  }
-
-  if (typeof value === "string" && !isNaN(Date.parse(value))) {
-    const date = new Date(value);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-  return String(value);
-};
-
-// Render each value intelligently
+// Render values (object, array, primitive)
 const renderValue = (value) => {
   if (Array.isArray(value)) {
     return (
       <div className="space-y-2">
         {value.map((item, idx) => (
           <div key={idx} className="p-2 border rounded bg-gray-50">
-            <div className="font-semibold mb-1 text-gray-700">
-              {/* Entry {idx + 1} */}
-            </div>
             {typeof item === "object" && item !== null ? (
               <ul className="list-none ml-2 space-y-1">
                 {Object.entries(item).map(
@@ -94,8 +59,8 @@ const renderValue = (value) => {
   return formatValue(value);
 };
 
-// Single Section
-const Section = ({ title, data, fieldOrder = [] }) => (
+// Section component for each data block
+/* const Section = ({ title, data, fieldOrder = [] }) => (
   <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 space-y-2">
     <h3 className="text-lg font-semibold text-blue-600">{title}</h3>
     <table className="w-full text-sm text-left text-gray-800 mt-2">
@@ -118,10 +83,99 @@ const Section = ({ title, data, fieldOrder = [] }) => (
       </tbody>
     </table>
   </div>
+); */
+
+const personalFields = [
+  "title",
+  "firstName",
+  "lastName",
+  "sapid",
+  "gender",
+  "dob",
+  "birthplace",
+  "state",
+  "religion",
+  "category",
+  "subCategory",
+  "idMark1",
+  "idMark2",
+  "exServiceman",
+  "adhaarId",
+  "mobile",
+  "email",
+  "pwd",
+  "motherTongue",
+  "hindiKnowledge",
+  "langHindiRead",
+  "langHindiWrite",
+  "langHindiSpeak",
+];
+const personalFieldLabels = {
+  title: "Title",
+  firstName: "First Name",
+  lastName: "Last Name",
+  sapid: "SAP ID",
+  gender: "Gender",
+  dob: "Date of Birth",
+  birthplace: "Birthplace",
+  state: "State",
+  religion: "Religion",
+  category: "Category",
+  subCategory: "Sub Category",
+  idMark1: "ID Mark 1",
+  idMark2: "ID Mark 2",
+  exServiceman: "Ex-Serviceman",
+  adhaarId: "Aadhaar ID",
+  mobile: "Mobile",
+  email: "Email",
+  pwd: "Person With Disability",
+  motherTongue: "Mother Tongue",
+  hindiKnowledge: "Hindi Knowledge",
+  langHindiRead: "Can Read Hindi",
+  langHindiWrite: "Can Write Hindi",
+  langHindiSpeak: "Can Speak Hindi",
+};
+
+function formatPersonalKey(key) {
+  console.log("Key for label:", key, "Label:", personalFieldLabels[key]);
+  return personalFieldLabels[key] || formatKey(key);
+}
+
+const Section = ({
+  title,
+  data,
+  fieldOrder = [],
+  keyFormatter = formatKey,
+}) => (
+  <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+    <h3 className="text-xl font-semibold text-blue-700 border-b pb-2">
+      {title}
+    </h3>
+    <div className="space-y-3">
+      {(fieldOrder.length > 0 ? fieldOrder : Object.keys(data || {})).map(
+        (key) => {
+          const value = data?.[key];
+          if (value === undefined || shouldHideField(key)) return null;
+
+          return (
+            <div
+              key={key}
+              className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 border-b pb-2"
+            >
+              <div className="sm:w-48 font-medium text-gray-700 capitalize">
+                {keyFormatter(key)}:
+              </div>
+              <div className="text-gray-900 flex-1">{renderValue(value)}</div>
+            </div>
+          );
+        }
+      )}
+    </div>
+  </div>
 );
 
-// Review Form
-const ReviewForm = ({ onBack, onSubmit, token }) => {
+// Main ReviewForm component
+const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -132,16 +186,21 @@ const ReviewForm = ({ onBack, onSubmit, token }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // 🧠 Preprocess the data before storing
-      const normalized = normalizeUserData(response.data);
-        console.log("🚀 ~ fetchUserData ~ normalized:", normalized)
-        setUserData(normalized); // ✅ Set fetched data
+        // const normalized = normalizeUserData(response.data);
+        // console.log("🚀 ~ fetchUserData ~ normalized:", normalized);
+
+        console.log(response.data);
+        setUserData(response.data);
+        // Pass the fetched data to parent for submission and PDF
+        if (onDataReady) {
+          onDataReady(response.data);
+        }
       } catch (error) {
         console.error("Failed to load review data:", error.message);
       }
     };
 
-    fetchUserData(); // ✅ Load on mount
+    fetchUserData();
   }, [token]);
 
   if (!userData) {
@@ -159,36 +218,24 @@ const ReviewForm = ({ onBack, onSubmit, token }) => {
       </h2>
 
       <div className="space-y-6">
-        <Section title="Personal Details" data={userData.personalDetails}
-        fieldOrder={[
-          "title",
-          "firstName",
-          "lastName",
-          "sapId",
-          "gender",
-          "dateOfBirth",
-          "birthplace",
-          "state",
-          "religion",
-          "category",
-          "subCategory",
-          "idMark1",
-          "idMark2",
-          "exServiceman",
-          "adhaarId",
-          "mobile",
-          "email",
-          "personWithDisability",
-          "motherTongue",
-          "hindiKnowledge",
-          "canReadHindi",
-          "canWriteHindi",
-          "canSpeakHindi",
-
-        ]}
+        {console.log(
+          "Personal Details Data:",
+          Array.isArray(userData.personalDetails?.personalDetails)
+            ? userData.personalDetails.personalDetails[0]
+            : userData.personalDetails
+        )}
+        <Section
+          title="Personal Details"
+          data={
+            Array.isArray(userData.personalDetails?.userDetails)
+              ? userData.personalDetails.personalDetails[0]
+              : userData.personalDetails
+          }
+          // fieldOrder={personalFields}
+          keyFormatter={formatPersonalKey}
         />
         <Section title="Education Details" data={userData.educationDetails} />
-        <Section title="Family Details" data={userData.familyDetails} />
+        <Section title="Family Details" data={userData.personalDetails} />
         <Section title="Address Details" data={userData.addressDetails} />
         <Section title="Work Experience" data={userData.workExperience} />
       </div>

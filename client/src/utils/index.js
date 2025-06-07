@@ -1,34 +1,32 @@
+// const normalizeUserData = (data) => {
+//   const personal = data.personalDetails?.personalDetails || {};
+//   const employee = personal.employeeId || {};
+// console.log("calling nor",data)
+//   return {
+//     ...data,
+//    /*  personalDetails: {
+//       ...personal,
 
+//       // Flatten employee fields if nested
+//       sapId: personal.sapId || employee.sapId || "",
+//       email: personal.email || employee.email || "",
 
-const normalizeUserData = (data) => {
-  const personal = data.personalDetails || {};
-  const employee = personal.employeeId || {};
+//       // Normalize aliased fields
+//       dateOfBirth: personal.dateOfBirth || personal.dob || "",
+//       personWithDisability: personal.personWithDisability ?? personal.pwd,
+//       canReadHindi: personal.canReadHindi ?? personal.langHindiRead,
+//       canWriteHindi: personal.canWriteHindi ?? personal.langHindiWrite,
+//       canSpeakHindi: personal.canSpeakHindi ?? personal.langHindiSpeak,
 
-  return {
-    ...data,
-    personalDetails: {
-      ...personal,
-      sapId: employee.sapId,
-      email: employee.email,
+//       // Remove backend-only or raw aliases
+//       employeeId: undefined,
+//       pwd: undefined,
+//       dob: undefined,
+//       langHindiRead: undefined,
+//       langHindiWrite: undefined,
+//       langHindiSpeak: undefined,
+//     }, */
+//   };
+// };
 
-      dateOfBirth: personal.dob,
-      personWithDisability: personal.pwd,
-      canReadHindi: personal.langHindiRead,
-      canWriteHindi: personal.langHindiWrite,
-      canSpeakHindi: personal.langHindiSpeak,
-
-      // Optionally remove the nested object if not needed:
-      employeeId: undefined,
-      pwd: undefined,
-      langHindiRead: undefined,
-      langHindiWrite: undefined,
-      langHindiSpeak: undefined,
-    }
-  };
-};
-
-
-
-export {
-    normalizeUserData,
-}
+// export { normalizeUserData };

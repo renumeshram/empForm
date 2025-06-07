@@ -116,14 +116,17 @@ const fetchFinalData = async(req, res)=>{
         const employeeId = req.user.id
         console.log("🚀 ~ fetchFinalData ~ employeeId:", employeeId)
 
-        const personalDetails = await PersonalDetails.findOne({ employeeId}).populate("employeeId");
+        const personalDetails = await PersonalDetails.findOne({ employeeId}).populate("employeeId", "-_id -__v").select("-_id -__v");
         const educationDetails = await EducationDetails.findOne({employeeId});
         const workExperience = await WorkExperience.findOne({employeeId});
         const familyDetails = await FamilyDetails.findOne({employeeId});
         const addressDetails = await AddressDetails.findOne({employeeId});
 
+
+        const {employeeId:id,...perDetails} = personalDetails.toObject()
+
         res.status(200).json({
-            personalDetails,
+            personalDetails:{"personalDetails":[{...perDetails,email:id.email, sapid:id.sapId}]},
             educationDetails,
             workExperience,
             familyDetails,
