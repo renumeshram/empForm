@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
-import { normalizeUserData } from "../../utils";
+// import { normalizeUserData } from "../../utils";
 import {
   formatValue,
   shouldHideField,
@@ -9,7 +9,7 @@ import {
 } from "../../utils/formatters";
 
 // Render values (object, array, primitive)
-const renderValue = (value) => {
+const renderValue = (value) => {console.log("Rendering value:", value);
   if (Array.isArray(value)) {
     return (
       <div className="space-y-2">
@@ -22,7 +22,7 @@ const renderValue = (value) => {
                     !shouldHideField(k) && (
                       <li key={k}>
                         <span className="font-medium capitalize">
-                          {k.replace(/([A-Z])/g, " $1")}:
+                          {changeDisplayMain(k)}:
                         </span>{" "}
                         {formatValue(v)}
                       </li>
@@ -136,7 +136,7 @@ const personalFieldLabels = {
   langHindiSpeak: "Can Speak Hindi",
 };
 
-function formatPersonalKey(key) {
+function changeDisplayMain(key) {
   console.log("Key for label:", key, "Label:", personalFieldLabels[key]);
   return personalFieldLabels[key] || formatKey(key);
 }
@@ -145,7 +145,7 @@ const Section = ({
   title,
   data,
   fieldOrder = [],
-  keyFormatter = formatKey,
+  keyFormatter=formatKey,
 }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
     <h3 className="text-xl font-semibold text-blue-700 border-b pb-2">
@@ -163,7 +163,7 @@ const Section = ({
               className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 border-b pb-2"
             >
               <div className="sm:w-48 font-medium text-gray-700 capitalize">
-                {keyFormatter(key)}:
+                {keyFormatter(key)}
               </div>
               <div className="text-gray-900 flex-1">{renderValue(value)}</div>
             </div>
@@ -221,18 +221,18 @@ const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
         {console.log(
           "Personal Details Data:",
           Array.isArray(userData.personalDetails?.personalDetails)
-            ? userData.personalDetails.personalDetails[0]
-            : userData.personalDetails
+            ? userData.personalDetails
+            : null
         )}
         <Section
           title="Personal Details"
           data={
-            Array.isArray(userData.personalDetails?.userDetails)
-              ? userData.personalDetails.personalDetails[0]
-              : userData.personalDetails
+            Array.isArray(userData.personalDetails?.personalDetails)
+              ? userData.personalDetails
+              : null
           }
           // fieldOrder={personalFields}
-          keyFormatter={formatPersonalKey}
+          keyFormatter={changeDisplayMain}
         />
         <Section title="Education Details" data={userData.educationDetails} />
         <Section title="Family Details" data={userData.personalDetails} />

@@ -1,15 +1,15 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { formatValue, shouldHideField, formatKey } from "../utils/formatters";
-import { normalizeUserData } from "../utils";
+// import { normalizeUserData } from "../utils";
 
 export const generatePDF = (formData) => {
-  const normalizedData = normalizeUserData(formData);
+  // const normalizedData = normalizeUserData(formData);
   // console.log("🚀 ~ generatePDF ~ normalizedData:", normalizedData)
 
   const doc = new jsPDF();
   doc.setFontSize(18);
-  doc.text("Employee Application Preview", 14, 20);
+  doc.text("Employee Application", 14, 20);
   doc.setFontSize(12);
 
   let y = 30;
@@ -128,7 +128,7 @@ const personalFieldLabels = {
 };
 
 // Override formatKey for personal details section
-function formatPersonalKey(key) {
+function changeDisplayMain(key) {
   return personalFieldLabels[key] || formatKey(key);
 }
 
@@ -136,7 +136,7 @@ function formatPersonalKey(key) {
   renderSection(
   "Personal Details",
   Array.isArray(formData.personalDetails) ? formData.personalDetails[0] : formData.personalDetails,
-  personalFields, formatPersonalKey
+  personalFields, changeDisplayMain
 );
   renderSection("Education Details", formData.educationDetails);
   renderSection("Family Details", formData.familyDetails);
