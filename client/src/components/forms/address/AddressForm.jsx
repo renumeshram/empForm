@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddressDetails from "./Address";
+import {useAuth} from "../../../context/AuthContext"; // Assuming useAuth is imported from your AuthContext
 
 const AddressForm = ({ onNext, defaultValues = {} }) => {
   const [localAddress, setLocalAddress] = useState({});
@@ -22,6 +23,8 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
     }
   }, [sameAsLocal, localAddress]);
 
+  const { sessionExpired } = useAuth(); // Assuming useAuth is imported from your AuthContext
+
   const handleSubmit = () => {
     const combined = {
       local: localAddress,
@@ -41,6 +44,11 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
 
   return (
     <div className="space-y-8 max-w-3xl mx-auto p-4 bg-white rounded shadow">
+      {sessionExpired && (
+        <div className="text-red-500 mb-2">
+          Session expired. Please log in again.
+        </div>
+      )}
       <h2 className="text-xl font-bold">Local Address (Kirandul)</h2>
       <AddressDetails onChange={setLocalAddress} values={localAddress} />
 

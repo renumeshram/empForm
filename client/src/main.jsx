@@ -8,12 +8,12 @@ import { EmployeeDataProvider } from "./context/EmployeeDataContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <EmployeeDataProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <EmployeeDataProvider>
           <App />
-        </BrowserRouter>
-      </EmployeeDataProvider>
-    </AuthProvider>
+        </EmployeeDataProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </StrictMode>
 );

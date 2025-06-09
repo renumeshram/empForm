@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
+import { useAuth } from "../../../context/AuthContext";
 
 const familyTypes = [
   "Spouse",
@@ -26,6 +27,7 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
     },
   });
 
+  const { sessionExpired } = useAuth(); // Assuming useAuth is imported from your AuthContext
   const { fields, append, remove } = useFieldArray({
     control,
     name: "familyMembers",
@@ -37,6 +39,11 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {sessionExpired && (
+        <div className="text-red-500 mb-2">
+          Session expired. Please log in again.
+        </div>
+      )}
       <h2 className="text-xl font-bold">Family Details</h2>
 
       <button
@@ -66,14 +73,19 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
         const titles = titlesByType[type] || [];
 
         return (
-          <div key={member.id} className="border p-4 rounded shadow bg-gray-100">
+          <div
+            key={member.id}
+            className="border p-4 rounded shadow bg-gray-100"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label>Family Member Type</label>
                 <select {...register(`familyMembers[${index}].type`)}>
                   <option value="">Select</option>
                   {familyTypes.map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -83,7 +95,9 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                 <select {...register(`familyMembers[${index}].title`)}>
                   <option value="">Select</option>
                   {titles.map((title) => (
-                    <option key={title} value={title}>{title}</option>
+                    <option key={title} value={title}>
+                      {title}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -119,14 +133,17 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                 <>
                   <div>
                     <label>Spouse Status</label>
-                    <select {...register(`familyMembers[${index}].employmentStatus`)}>
+                    <select
+                      {...register(`familyMembers[${index}].employmentStatus`)}
+                    >
                       <option value="">Select</option>
                       <option value="Working">Working</option>
                       <option value="Not-Working">Not-Working</option>
                     </select>
                   </div>
 
-                  {watch(`familyMembers[${index}].employmentStatus`) === "Working" && (
+                  {watch(`familyMembers[${index}].employmentStatus`) ===
+                    "Working" && (
                     <input
                       placeholder="Spouse Employment Details"
                       {...register(`familyMembers[${index}].employmentDetails`)}

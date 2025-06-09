@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, use, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -13,11 +14,16 @@ export const AuthProvider = ({ children }) => {
     return stored? JSON.parse(stored): "";
   })
 
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const navigate = useNavigate();
+
   const login = (token, user) => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
     setToken(token);
     setUser(user);
+    setSessionExpired(false);
+    console.log("Session Expired:",sessionExpired)
   };
   // console.log("🚀 ~ login ~ token:", token)
 
@@ -30,6 +36,20 @@ export const AuthProvider = ({ children }) => {
     setEmpData("");
   };
 
+  const handleSessionExpired = () => {
+    setSessionExpired(true);
+    logout();
+    // Show toast notification for session expiry
+    if (typeof window !== 'undefined') {
+      // Dynamically import to avoid circular dependency
+      import('react-toastify').then(({ toast }) => {
+        toast.error('Session expired. Please login again.');
+      });
+    }
+    navigate("/");
+  }
+
+
   const fetchData =(result) =>{
     setEmpData(result);
     sessionStorage.setItem("empData", JSON.stringify(result));
@@ -38,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{token,user, login, logout, isAuthenticated, fetchData, empData}}>
+    <AuthContext.Provider value={{token,user, login, logout, isAuthenticated, fetchData, empData, sessionExpired, setSessionExpired, handleSessionExpired }}>
       {children}
     </AuthContext.Provider>
   );

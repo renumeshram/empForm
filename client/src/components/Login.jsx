@@ -1,12 +1,13 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import { useEmployeeData } from "../context/EmployeeDataContext.jsx";
 import React, { useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import api from "../services/axiosInstance.js"; // Import your axios instance
 
 const Login = () => {
-  const { login, fetchData } = useAuth();
+  const { login, fetchData, sessionExpired, setSessionExpired } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -33,7 +34,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${apiUrl}/login`, formData);
+      const res = await api.post(`/login`, formData);
       const { token, user } = res.data;
       console.log("🚀 ~ handleSubmit ~ token:", token);
       console.log("🚀 ~ handleSubmit ~ res.data:", res.data)
@@ -45,12 +46,12 @@ const Login = () => {
         toast.success("Getting employee's data...");
 
         const [personal, education,work, family, address ] = await Promise.all([
-          axios.get(`${apiUrl}/personalDetails`, {
+          api.get(`/personalDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
-          axios.get(`${apiUrl}/educationDetails`, {
+          api.get(`/educationDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -65,7 +66,7 @@ const Login = () => {
           //     Authorization: `Bearer ${token}`,
           //   },
           // }),
-          axios.get(`${apiUrl}/workDetails`, {
+          api.get(`/workDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -116,8 +117,19 @@ const Login = () => {
     }
   };
 
+  React.useEffect(() => {
+    // Reset sessionExpired when the user starts typing or loads the login page
+    if (sessionExpired) {
+      setSessionExpired(false);
+    }
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="flex border rounded-2xl flex-col justify-center items-center text-white">
+      {sessionExpired && (
+        <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4">Session Expired. Please login again.</div>
+      )}
       <div className="m-5">
         <h2 className="text-3xl">Login</h2>
       </div>

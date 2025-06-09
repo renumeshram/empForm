@@ -1,5 +1,6 @@
-import axios from 'axios'
+// import axios from 'axios'
 // import { useAuth } from '../context/AuthContext';
+import api from './axiosInstance.js'; // Import your axios instance
 
 const sectionEndpoints = {
     personalDetails: "personal",
@@ -8,10 +9,10 @@ const sectionEndpoints = {
     addressDetails: "address",
     workExperience: "work",
 }
-const apiUrl = import.meta.env.VITE_API_URL;
+// const apiUrl = import.meta.env.VITE_API_URL;
 // const apiUrl = "http://localhost:3000"
 
-console.log('API URL:', apiUrl); 
+// console.log('API URL:', apiUrl); 
 // const { token } =useAuth();
 
 export const saveSectionData = async (sectionName, data, token) => {
@@ -35,7 +36,14 @@ export const saveSectionData = async (sectionName, data, token) => {
         //     console.log(`Failed to save ${sectionName}`);
             
         // }
-        await axios.post(`${apiUrl}/${endpoint}`, data,{
+        // await axios.post(`${apiUrl}/${endpoint}`, data,{
+        //     headers:{
+        //         Authorization: `Bearer ${token}`
+        //     }
+        // });
+        // return true;
+
+         await api.post(`/${endpoint}`, data,{
             headers:{
                 Authorization: `Bearer ${token}`
             }
@@ -43,7 +51,8 @@ export const saveSectionData = async (sectionName, data, token) => {
         return true;
     }catch(error){
         console.log(`🚀 ~ saveSectionData ~ error saving ${sectionName}:`, error);
-        return false;
+        throw error
+        // return false;
         
     }
 }

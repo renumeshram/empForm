@@ -51,7 +51,7 @@ const schema = yup.object().shape({
 const PersonalDetailsForm = ({ onNext }) => {
   const [age, setAge] = useState(null);
 
-  const { token, empData } = useAuth();
+  const { token, empData, sessionExpired } = useAuth();
   const {
     register,
     handleSubmit,
@@ -66,7 +66,7 @@ const PersonalDetailsForm = ({ onNext }) => {
   const dob = watch("dob");
   const motherTongue = watch("motherTongue");
 
-  const {personalData, updateChangeInPersonalData} = useEmployeeData()
+  const { personalData, updateChangeInPersonalData } = useEmployeeData();
 
   // useEffect(()=>{
   //   if (empData && empData.data) {
@@ -92,9 +92,9 @@ const PersonalDetailsForm = ({ onNext }) => {
   }, [dob, age]);
 
   useEffect(() => {
-    console.log(personalData)
+    console.log(personalData);
     if (personalData) {
-      console.log("Yes here it is....")
+      console.log("Yes here it is....");
       const formValues = getInitialFormValues(personalData);
       reset(formValues);
     }
@@ -112,7 +112,6 @@ const PersonalDetailsForm = ({ onNext }) => {
 
   const getInitialFormValues = (personalData) => {
     if (!personalData?.pData || !personalData.emp) return {};
-
 
     return {
       title: personalData.pData.title || "",
@@ -147,7 +146,7 @@ const PersonalDetailsForm = ({ onNext }) => {
 
       if (hasSaved) {
         onNext(data);
-        updateChangeInPersonalData(data)
+        updateChangeInPersonalData(data);
         console.log("Section 1 Data", data);
       } else {
         console.error("Failed to save Personal Details");
@@ -158,276 +157,292 @@ const PersonalDetailsForm = ({ onNext }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="max-w-4xl mx-auto p-6 bg-white shadow rounded space-y-6"
-    >
-      <h2 className="text-2xl font-semibold mb-4">Personal Details</h2>
-
-      {/* Grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Title */}
-        <div>
-          <label className="block font-medium">Title</label>
-          <select className="w-full border rounded p-2" {...register("title")}>
-            <option value="">Select</option>
-            <option value="Shri">Shri</option>
-            <option value="Smt">Smt</option>
-            <option value="Ms">Ms</option>
-          </select>
-          <p className="text-red-500 text-sm">{errors.title?.message}</p>
+    <div>
+      {sessionExpired && (
+        <div className="text-red-500 mb-2">
+          Session expired. Please log in again.
         </div>
+      )}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="max-w-4xl mx-auto p-6 bg-white shadow rounded space-y-6"
+      >
+        <h2 className="text-2xl font-semibold mb-4">Personal Details</h2>
 
-        <div>
-          <label className="block font-medium">FirstName</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("firstName")}
-            placeholder="First Name"
-          />
-          <p className="text-red-500 text-sm">{errors.name?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">LastName</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("lastName")}
-            placeholder="Last Name"
-          />
-          <p className="text-red-500 text-sm">{errors.surname?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">SAP ID</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("sapId")}
-            placeholder="SAP ID"
-          />
-          <p className="text-red-500 text-sm">{errors.sapId?.message}</p>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="block font-medium mb-1">Gender</label>
-          <div className="space-x-4">
-            <label>
-              <input type="radio" value="Male" {...register("gender")} /> Male
-            </label>
-            <label>
-              <input type="radio" value="Female" {...register("gender")} />{" "}
-              Female
-            </label>
+        {/* Grid layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Title */}
+          <div>
+            <label className="block font-medium">Title</label>
+            <select
+              className="w-full border rounded p-2"
+              {...register("title")}
+            >
+              <option value="">Select</option>
+              <option value="Shri">Shri</option>
+              <option value="Smt">Smt</option>
+              <option value="Ms">Ms</option>
+            </select>
+            <p className="text-red-500 text-sm">{errors.title?.message}</p>
           </div>
-          <p className="text-red-500 text-sm">{errors.gender?.message}</p>
-        </div>
 
-        <div>
-          <label className="block font-medium">Date of Birth</label>
-          <input
-            className="w-full border rounded p-2"
-            type="date"
-            {...register("dob")}
-          />
-          {age !== null && (
-            <p className="text-green-600 text-sm">Age: {age} years</p>
+          <div>
+            <label className="block font-medium">FirstName</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("firstName")}
+              placeholder="First Name"
+            />
+            <p className="text-red-500 text-sm">{errors.name?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">LastName</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("lastName")}
+              placeholder="Last Name"
+            />
+            <p className="text-red-500 text-sm">{errors.surname?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">SAP ID</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("sapId")}
+              placeholder="SAP ID"
+            />
+            <p className="text-red-500 text-sm">{errors.sapId?.message}</p>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="block font-medium mb-1">Gender</label>
+            <div className="space-x-4">
+              <label>
+                <input type="radio" value="Male" {...register("gender")} /> Male
+              </label>
+              <label>
+                <input type="radio" value="Female" {...register("gender")} />{" "}
+                Female
+              </label>
+            </div>
+            <p className="text-red-500 text-sm">{errors.gender?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Date of Birth</label>
+            <input
+              className="w-full border rounded p-2"
+              type="date"
+              {...register("dob")}
+            />
+            {age !== null && (
+              <p className="text-green-600 text-sm">Age: {age} years</p>
+            )}
+            <p className="text-red-500 text-sm">{errors.dob?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Birth Place</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("birthplace")}
+              placeholder="Birthplace"
+            />
+            <p className="text-red-500 text-sm">{errors.birthplace?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">State</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("state")}
+              placeholder="State"
+            />
+            <p className="text-red-500 text-sm">{errors.state?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Religion</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("religion")}
+              placeholder="Religion"
+            />
+            <p className="text-red-500 text-sm">{errors.religion?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Category</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("category")}
+              placeholder="Category"
+            />
+            <p className="text-red-500 text-sm">{errors.category?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Sub-Category</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("subCategory")}
+              placeholder="Sub-Category"
+            />
+            <p className="text-red-500 text-sm">
+              {errors.subCategory?.message}
+            </p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Identification Mark 1</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("idMark1")}
+              placeholder="Identification Mark 1"
+            />
+            <p className="text-red-500 text-sm">{errors.idMark1?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Identification Mark 2</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("idMark2")}
+              placeholder="Identification Mark 2"
+            />
+            <p className="text-red-500 text-sm">{errors.idMark2?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Ex-Serviceman</label>
+            <select
+              className="w-full border rounded p-2"
+              {...register("exServiceman")}
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p className="text-red-500 text-sm">
+              {errors.exServiceman?.message}
+            </p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Adhaar Number</label>
+            <input
+              className="w-full border rounded p-2"
+              {...register("adhaarId")}
+              placeholder="Aadhar ID"
+            />
+            <p className="text-red-500 text-sm">{errors.adhaarId?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Mobile Number</label>
+            <input
+              type="number"
+              className="w-full border rounded p-2"
+              {...register("mobile")}
+              placeholder="Mobile Number"
+            />
+            <p className="text-red-500 text-sm">{errors.mobile?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Email</label>
+            <input
+              className="w-full border rounded p-2"
+              type="email"
+              {...register("email")}
+              placeholder="example@domain.com"
+            />
+            <p className="text-red-500 text-sm">{errors.email?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Person with Disability</label>
+            <select className="w-full border rounded p-2" {...register("pwd")}>
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p className="text-red-500 text-sm">{errors.pwd?.message}</p>
+          </div>
+
+          <div>
+            <label className="block font-medium">Mother Tongue</label>
+            <select
+              className="w-full border rounded p-2"
+              {...register("motherTongue")}
+            >
+              <option value="">Select</option>
+              {languageOptions.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+            <p className="text-red-500 text-sm">
+              {errors.motherTongue?.message}
+            </p>
+          </div>
+
+          {motherTongue === "OTHER" && (
+            <input
+              className="w-full border rounded p-2"
+              {...register("otherMotherTongue")}
+              placeholder="Please specify"
+            />
           )}
-          <p className="text-red-500 text-sm">{errors.dob?.message}</p>
-        </div>
 
-        <div>
-          <label className="block font-medium">Birth Place</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("birthplace")}
-            placeholder="Birthplace"
-          />
-          <p className="text-red-500 text-sm">{errors.birthplace?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">State</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("state")}
-            placeholder="State"
-          />
-          <p className="text-red-500 text-sm">{errors.state?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Religion</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("religion")}
-            placeholder="Religion"
-          />
-          <p className="text-red-500 text-sm">{errors.religion?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Category</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("category")}
-            placeholder="Category"
-          />
-          <p className="text-red-500 text-sm">{errors.category?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Sub-Category</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("subCategory")}
-            placeholder="Sub-Category"
-          />
-          <p className="text-red-500 text-sm">{errors.subCategory?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Identification Mark 1</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("idMark1")}
-            placeholder="Identification Mark 1"
-          />
-          <p className="text-red-500 text-sm">{errors.idMark1?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Identification Mark 2</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("idMark2")}
-            placeholder="Identification Mark 2"
-          />
-          <p className="text-red-500 text-sm">{errors.idMark2?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Ex-Serviceman</label>
-          <select
-            className="w-full border rounded p-2"
-            {...register("exServiceman")}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          <p className="text-red-500 text-sm">{errors.exServiceman?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Adhaar Number</label>
-          <input
-            className="w-full border rounded p-2"
-            {...register("adhaarId")}
-            placeholder="Aadhar ID"
-          />
-          <p className="text-red-500 text-sm">{errors.adhaarId?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Mobile Number</label>
-          <input
-            type="number"
-            className="w-full border rounded p-2"
-            {...register("mobile")}
-            placeholder="Mobile Number"
-          />
-          <p className="text-red-500 text-sm">{errors.mobile?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Email</label>
-          <input
-            className="w-full border rounded p-2"
-            type="email"
-            {...register("email")}
-            placeholder="example@domain.com"
-          />
-          <p className="text-red-500 text-sm">{errors.email?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Person with Disability</label>
-          <select className="w-full border rounded p-2" {...register("pwd")}>
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          <p className="text-red-500 text-sm">{errors.pwd?.message}</p>
-        </div>
-
-        <div>
-          <label className="block font-medium">Mother Tongue</label>
-          <select
-            className="w-full border rounded p-2"
-            {...register("motherTongue")}
-          >
-            <option value="">Select</option>
-            {languageOptions.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang}
-              </option>
-            ))}
-          </select>
-          <p className="text-red-500 text-sm">{errors.motherTongue?.message}</p>
-        </div>
-
-        {motherTongue === "OTHER" && (
-          <input
-            className="w-full border rounded p-2"
-            {...register("otherMotherTongue")}
-            placeholder="Please specify"
-          />
-        )}
-
-        <div>
-          <label className="block font-medium">
-            Working knowledge in Hindi?
-          </label>
-          <select
-            className="w-full border rounded p-2"
-            {...register("hindiKnowledge")}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          <p className="text-red-500 text-sm">
-            {errors.hindiKnowledge?.message}
-          </p>
-        </div>
-
-        <div className="col-span-2">
-          <label className="block font-medium mb-1">
-            Hindi Language Skills
-          </label>
-          <div className="space-x-4">
-            <label>
-              <input type="checkbox" {...register("langHindiRead")} /> Read
+          <div>
+            <label className="block font-medium">
+              Working knowledge in Hindi?
             </label>
-            <label>
-              <input type="checkbox" {...register("langHindiWrite")} /> Write
+            <select
+              className="w-full border rounded p-2"
+              {...register("hindiKnowledge")}
+            >
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p className="text-red-500 text-sm">
+              {errors.hindiKnowledge?.message}
+            </p>
+          </div>
+
+          <div className="col-span-2">
+            <label className="block font-medium mb-1">
+              Hindi Language Skills
             </label>
-            <label>
-              <input type="checkbox" {...register("langHindiSpeak")} /> Speak
-            </label>
+            <div className="space-x-4">
+              <label>
+                <input type="checkbox" {...register("langHindiRead")} /> Read
+              </label>
+              <label>
+                <input type="checkbox" {...register("langHindiWrite")} /> Write
+              </label>
+              <label>
+                <input type="checkbox" {...register("langHindiSpeak")} /> Speak
+              </label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="text-right">
-        <button
-          type="submit"
-          className="mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Next
-        </button>
-      </div>
-    </form>
+        <div className="text-right">
+          <button
+            type="submit"
+            className="mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

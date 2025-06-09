@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-const apiUrl = import.meta.env.VITE_API_URL;
+// import axios from "axios";
+import api from "../../services/axiosInstance.js"; // Import your axios instance
+// const apiUrl = import.meta.env.VITE_API_URL;
 // import { normalizeUserData } from "../../utils";
 import {
   formatValue,
   shouldHideField,
   formatKey,
 } from "../../utils/formatters";
+import { useAuth } from "../../context/AuthContext";
 
 // Render values (object, array, primitive)
-const renderValue = (value) => {console.log("Rendering value:", value);
+const renderValue = (value) => {
+  console.log("Rendering value:", value);
   if (Array.isArray(value)) {
     return (
       <div className="space-y-2">
@@ -145,7 +148,7 @@ const Section = ({
   title,
   data,
   fieldOrder = [],
-  keyFormatter=formatKey,
+  keyFormatter = formatKey,
 }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
     <h3 className="text-xl font-semibold text-blue-700 border-b pb-2">
@@ -177,11 +180,11 @@ const Section = ({
 // Main ReviewForm component
 const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
   const [userData, setUserData] = useState(null);
-
+  const {sessionExpired} = useAuth();
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios(`${apiUrl}/user/form-data`, {
+        const response = await api(`/user/form-data`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -213,6 +216,11 @@ const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
 
   return (
     <div className="space-y-6">
+      {sessionExpired && (
+        <div className="text-red-500 mb-2">
+          Session expired. Please log in again.
+        </div>
+      )}
       <h2 className="text-2xl font-bold text-center text-blue-700">
         Preview Application
       </h2>

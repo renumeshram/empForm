@@ -7,7 +7,7 @@ import { useEmployeeData } from "../../../context/EmployeeDataContext";
 import { v4 as uuidv4} from "uuid";
 
 const WorkExperienceForm = ({ onNext }) => {
-  const {token} = useAuth()
+  const {token, sessionExpired} = useAuth()
 
   const {workData, updateWorkData } =useEmployeeData();
 
@@ -50,6 +50,11 @@ const WorkExperienceForm = ({ onNext }) => {
 
   return (
     <FormProvider {...methods}>
+      {sessionExpired && (
+        <div className="text-red-500 mb-2">
+          Session expired. Please log in again.
+        </div>
+      )}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <p className="font-semibold text-lg mb-2">
           Add your previous employer details (up to 5)
