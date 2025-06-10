@@ -27,13 +27,13 @@ const Navbar = () => {
         )}
         <button
           onClick={handleChangeInPassword}
-          className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100"
+          className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 cursor-pointer"
         >
           Change Password
         </button>
         <button
           onClick={handleLogout}
-          className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100"
+          className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 cursor-pointer"
         >
           Logout
         </button>
