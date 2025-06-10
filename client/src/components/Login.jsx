@@ -25,7 +25,7 @@ const Login = () => {
 
   // const [result, setResult] =useState(null);
   // const [error, setError] = useState("")
-  const apiUrl = import.meta.env.VITE_API_URL;
+  // const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

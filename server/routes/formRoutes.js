@@ -3,12 +3,13 @@ import express from 'express';
 const router = express.Router();
 
 import handlers from '../controller/empRegLogin.js';
-import validateReg from '../middleware/validateRegistration.js';
+import  { validateReg, validateChangePassword } from '../middleware/validateRegistration.js';
 import personalDetailsHandler from '../controller/personalDetails.js';
 import { verifyToken } from '../middleware/authenticateLogin.js';
 import {fetchPersonalDetails, fetchEducation, fetchFamily, fetchWork, fetchFinalData } from '../controller/fetchDetails.js'
 import educationDetailsHandler from '../controller/educationDetails.js';
 import workExperienceHandler from '../controller/workExperiences.js';
+import { changePassword } from '../controller/changePassword.js';
 
 const  {registrationHandler, loginHandler} = handlers;
 
@@ -25,6 +26,8 @@ router.post('/personal',verifyToken, personalDetailsHandler)
 router.post('/education', verifyToken, educationDetailsHandler)
 
 router.post('/work', verifyToken, workExperienceHandler)
+
+router.put('/changePassword', verifyToken,validateChangePassword, changePassword)
 
 router.get('/personalDetails',verifyToken, fetchPersonalDetails)
 

@@ -57,7 +57,7 @@ const loginHandler = async (req, res) => {
         const token = jwt.sign(
             {id: empFound._id},
             process.env.JWT_SECRET,
-            {expiresIn: '1m'} // Set expiry to 1 minute for testing
+            {expiresIn: '1hr'} // Set expiry to 1 minute for testing
         )
 
         res.status(200).json({

@@ -12,4 +12,23 @@ const validateReg = (req, res, next)=>{
     next()
 }
 
-export default validateReg;
+const validateChangePassword = (req, res, next) => {
+    const { sapId, oldPassword, newPassword } = req.body;
+
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%!?*&])[a-zA-Z\d@#$%!?*&]{8,}$/
+
+    if ([sapId, oldPassword, newPassword].some((field) => field?.trim() === "")) {
+        return res.status(400).json("All fields are required...");
+    }
+
+    if(!passwordRegex.test(newPassword)) {
+        return res.status(400).json("New Password must be of minimum 8 characters and contain digits, lowercase, uppercase and special characters");
+    }
+
+    next();
+}
+
+export {
+    validateReg,
+    validateChangePassword,
+} 

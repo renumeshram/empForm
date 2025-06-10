@@ -11,6 +11,10 @@ const Navbar = () => {
     navigate("/");    // redirect to login
   };
 
+  const handleChangeInPassword = () => {
+    navigate("/changePassword"); // redirect to change password page
+  }
+
   return (
     <nav className="flex justify-between items-center px-6 py-3 bg-blue-600 text-white shadow-md">
       <h1 className="text-xl font-semibold">Employee Portal</h1>
@@ -21,6 +25,12 @@ const Navbar = () => {
             Welcome, {user.email || "User"}
           </span>
         )}
+        <button
+          onClick={handleChangeInPassword}
+          className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100"
+        >
+          Change Password
+        </button>
         <button
           onClick={handleLogout}
           className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100"

@@ -5,7 +5,7 @@ export const verifyToken = (req, res, next) =>{
 
     if(!token) return res.status(401).json({ 
         success: false,
-        msg: "No token, access denied",
+        msg: "Unauthorized access, No token provided",
         statusCode: 401,
     })
 

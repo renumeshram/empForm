@@ -1,7 +1,8 @@
 import React from "react";
 import MultiStepForm from "./components/MultiStepForm";
-import Register from "./components/register";
+import Register from "./components/Register";
 import Login from "./components/Login";
+import ChangePassword from "./components/forms/changePassword";
 import PrivateRoute from "./components/PrivateRoute";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -34,6 +35,14 @@ function App() {
           element={
             <PrivateRoute>
               <MultiStepForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/changePassword"
+          element={
+            <PrivateRoute>
+              <ChangePassword />
             </PrivateRoute>
           }
         />
