@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "./context/AuthContext";
 import api from "./services/axiosInstance";
+import AdminLogin from "./components/Admin/adminLogin";
 
 function App() {
   const { handleSessionExpired } = useAuth();
@@ -45,6 +46,10 @@ function App() {
               <ChangePassword />
             </PrivateRoute>
           }
+        />
+        <Route
+        path="/admin/login"
+        element= {<AdminLogin/>}
         />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
