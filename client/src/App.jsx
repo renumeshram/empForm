@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "./context/AuthContext";
 import api from "./services/axiosInstance";
 import AdminLogin from "./components/Admin/adminLogin";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 
 function App() {
   const { handleSessionExpired } = useAuth();
@@ -50,6 +51,12 @@ function App() {
         <Route
         path="/admin/login"
         element= {<AdminLogin/>}
+        />
+      
+
+      <Route
+        path="/admin/dashboard"
+        element= {<AdminDashboard/>}
         />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
