@@ -10,6 +10,9 @@ import {fetchPersonalDetails, fetchEducation, fetchFamily, fetchWork, fetchFinal
 import educationDetailsHandler from '../controller/educationDetails.js';
 import workExperienceHandler from '../controller/workExperiences.js';
 import { changePassword } from '../controller/changePassword.js';
+import { adminLoginHandler } from '../controller/adminController/adminLoginHandler.js';
+import { viewAllEmployeesHandler, viewEmployeeDataHandler } from '../controller/adminController/viewEmployeeDataHandler.js';
+import changeEmployeeApplicationStatus from '../controller/adminController/changeEmployeeApplicationStatus.js';
 
 const  {registrationHandler, loginHandler} = handlers;
 
@@ -38,5 +41,15 @@ router.get('/familyDetails',verifyToken, fetchFamily)
 router.get('/workDetails',verifyToken, fetchWork)
 
 router.get('/user/form-data', verifyToken, fetchFinalData)
+
+// router.patch('/user/application-status', verifyToken, changeEmployeeApplicationStatus)
+
+router.post('/admin/login', adminLoginHandler)
+
+router.get('/admin/view-employee/:sapId', viewEmployeeDataHandler)
+
+router.get('/admin/get-all-employees', viewAllEmployeesHandler)
+
+router.patch('/admin/update-application-status/:sapId', changeEmployeeApplicationStatus)
 
 export default router;

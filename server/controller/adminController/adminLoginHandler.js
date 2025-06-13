@@ -23,6 +23,7 @@ const adminLoginHandler = async (req, res)=>{
 
         res.status(200).json({
             success: true,
+            token: adminToken,
             msg: "Admin login successful",
             statusCode: 200,
         })

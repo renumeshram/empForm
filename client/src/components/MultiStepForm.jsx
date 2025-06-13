@@ -9,6 +9,7 @@ import ReviewForm from "./forms/ReviewForm";
 import Navbar from "./Navbar";
 import { useAuth } from "../context/AuthContext";
 import { generatePDF } from "../pdf/generatePDF.js";
+import { toast } from "react-toastify";
 
 const MultiStepForm = () => {
   const [currentStep, setStep] = useState(0);
@@ -21,6 +22,23 @@ const MultiStepForm = () => {
 
   const handleSubmit = async (finalData) => {
     console.log("✅ Final form submission:", finalData);
+    // try{
+    //   const response = await api.patch('/user/application-status',{
+    //     status: "true",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   if (response.success){
+    //     console.log("🚀 ~ handleSubmit ~ response:", response);
+    //     toast.success("Form submitted successfully!");
+    //   }
+    // }catch(error) {
+    //   console.log("🚀 ~ handleSubmit ~ error:", error)
+    //   toast.error("Failed to submit the form. Please try again.");
+    //   return;
+    // }
+
     setIsSubmitted(true); // ✅ Mark as submitted
   };
 
@@ -44,6 +62,7 @@ const MultiStepForm = () => {
   };
 
   return (
+    <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
     <div className="max-w-3xl mx-auto p-6 shadow-lg rounded-xl bg-white">
       <Navbar />
       {!isSubmitted ? (
@@ -87,6 +106,7 @@ const MultiStepForm = () => {
           </button>
         </div>
       )}
+    </div>
     </div>
   );
 };

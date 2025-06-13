@@ -31,6 +31,7 @@ const Register = () => {
   };
 
   return (
+    <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
     <div className="flex flex-col justify-center items-center text-white border rounded-2xl">
       <div className="m-5">
         <h2 className="text-3xl">Register</h2>
@@ -99,6 +100,8 @@ const Register = () => {
         </form>
       </div>
       {message && <p>{message}</p>}
+    </div>
+
     </div>
   );
 };

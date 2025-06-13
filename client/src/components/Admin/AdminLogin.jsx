@@ -34,14 +34,14 @@ const AdminLogin = () => {
       if (data && data.token) {
         //store admin token and user info
         localStorage.setItem("adminToken", data.token);
-        localStorage.setItem("adminUser", JSON, stringify(data.user));
+        localStorage.setItem("adminUser", JSON.stringify(data.user));
 
         toast.success("Admin login successful!");
 
         // Redirect to admin dashboard
         navigate("/admin/dashboard");
       } else {
-        toast.error(data?.msg || "Admin loin failed");
+        toast.error(data?.msg || "Admin login failed");
       }
     } catch (error) {
       console.log("🚀 ~ handleSubmit ~ error:", error);
@@ -57,62 +57,52 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <div className="text-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">Admin Login</h2>
-          <p className="text-gray-600 mt-2">Access Admin Dashboard</p>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              User ID
-            </label>
-            <input
-              type="text"
-              name="userId"
-              value={formData.userId}
-              onChange={handleChange}
-              placeholder="Enter Admin User ID"
-              required
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter Admin Password"
-              required
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium cursor-pointer"
-          >
-            {isLoading ? "Logging in..." : "Login as Admin"}
-          </button>
-        </div>
-
-        <div className="mt-4 text-center">
-          <button
-            onClick={handleBackToEmployee}
-            className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm underline"
-          >
-            Back to Employee Login
-          </button>
-        </div>
+    <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
+    <div className="flex border rounded-2xl flex-col justify-center items-center text-white">
+      <div className="m-5">
+        <h2 className="text-3xl">Admin Login</h2>
+        <p className="mt-2 text-green-500">Access the Admin Dashboard</p>
       </div>
+      <div className="mt-2 ">
+        <form onSubmit={handleSubmit}>
+          <label className="text-xl">User ID</label>
+          <input
+            type="text"
+            name="userId"
+            placeholder="Enter your user ID"
+            value={formData.userId}
+            onChange={handleChange}
+            required
+            className="p-2 ml-8 mb-5 border rounded-md"
+          />
+          <br />
+
+          <label className="text-xl">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="p-2 border rounded-md ml-2 mb-5"
+          />
+          <br />
+
+          <button
+            type="submit"
+            className="m-2 border border-black rounded-md bg-green-500 hover:bg-green-600 w-full py-2 text-white cursor-pointer ml-2"
+          >
+            Login
+          </button>
+
+          {/* <span className=" hover:text-blue-500"> */}
+            <button onClick={handleBackToEmployee} className=" hover: text-blue-500 w-full mt-5 cursor-pointer">Back to Employee Login</button>
+          {/* </span> */}
+        </form>
+      </div>
+      {/* {error && <p >{error}</p>} */}
+    </div>
     </div>
   );
 };

@@ -126,6 +126,7 @@ const Login = () => {
   }, []);
 
   return (
+    <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
     <div className="flex border rounded-2xl flex-col justify-center items-center text-white">
       {sessionExpired && (
         <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4">Session Expired. Please login again.</div>
@@ -172,6 +173,7 @@ const Login = () => {
         </form>
       </div>
       {/* {error && <p >{error}</p>} */}
+    </div>
     </div>
   );
 };

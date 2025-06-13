@@ -2,8 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import api from "../../services/axiosInstance";
-import { useAuth } from "../../context/AuthContext";
+import api from "../services/axiosInstance";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const ChangePassword = () => {
@@ -69,6 +69,7 @@ const ChangePassword = () => {
   };
 
   return (
+    <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
     <div className="flex border rounded-2xl flex-col justify-center items-center text-white">
       <div className="m-5">
         <h2 className="text-3xl">Change Password</h2>
@@ -127,6 +128,7 @@ const ChangePassword = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };
