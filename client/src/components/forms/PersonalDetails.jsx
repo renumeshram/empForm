@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import languageOptions from "../../constants/languageOptions";
+import {languageOptions, states} from "../../constants";
 import { saveSectionData } from "../../services/formApi";
 import { useAuth } from "../../context/AuthContext";
 import { useEmployeeData } from "../../context/EmployeeDataContext";
@@ -255,11 +255,16 @@ const PersonalDetailsForm = ({ onNext }) => {
 
           <div>
             <label className="block font-medium">State</label>
-            <input
-              className="w-full border rounded p-2"
+            <select className="w-full border rounded p-2"
               {...register("state")}
-              placeholder="State"
-            />
+            >
+              <option value="">Select</option>
+              {states.map((state)=>(
+                <option key={state.code} value={state.code}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
             <p className="text-red-500 text-sm">{errors.state?.message}</p>
           </div>
 
