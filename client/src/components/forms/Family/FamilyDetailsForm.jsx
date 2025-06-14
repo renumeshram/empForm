@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
 import { familyMemberTypes, titlesByType } from "../../../constants";
+import { bloodGroups } from "../../../constants";
 
 
 const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
@@ -64,7 +65,10 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label>Family Member Type</label>
-                <select {...register(`familyMembers[${index}].type`)}>
+                <select 
+                {...register(`familyMembers[${index}].type`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
+                >
                   <option value="">Select</option>
                   {familyMemberTypes.map((t) => (
                     <option key={t} value={t}>
@@ -76,7 +80,10 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
 
               <div>
                 <label>Title</label>
-                <select {...register(`familyMembers[${index}].title`)}>
+                <select 
+                {...register(`familyMembers[${index}].title`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
+                >
                   <option value="">Select</option>
                   {titles.map((title) => (
                     <option key={title} value={title}>
@@ -86,30 +93,48 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                 </select>
               </div>
 
+              <label>First Name</label>
               <input
-                placeholder="Name"
-                {...register(`familyMembers[${index}].name`)}
+                placeholder="First Name"
+                {...register(`familyMembers[${index}].name`)} 
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
+              <label>Surname</label>
               <input
                 placeholder="Surname"
                 {...register(`familyMembers[${index}].surname`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
+              <label>Aadhar Number</label>
               <input
                 placeholder="Aadhar Number"
                 {...register(`familyMembers[${index}].aadharNumber`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
-              <input
-                placeholder="Blood Group"
+              <label>Blood Group</label>
+              <select
                 {...register(`familyMembers[${index}].bloodGroup`)}
-              />
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
+              >
+                <option value="">Select Blood Group</option>
+                {bloodGroups.map((bg)=>(
+                  <option key ={bg} value={bg}>
+                    {bg}
+                  </option>
+                ))}
+              </select>
+              <label>Date of Birth</label>
               <input
                 type="date"
                 placeholder="Date of Birth"
                 {...register(`familyMembers[${index}].dob`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
+              <label>City of Birth</label>
               <input
                 placeholder="City of Birth"
                 {...register(`familyMembers[${index}].cityOfBirth`)}
+                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
 
               {/* Conditional Fields */}
@@ -119,6 +144,7 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                     <label>Spouse Status</label>
                     <select
                       {...register(`familyMembers[${index}].employmentStatus`)}
+                      className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
                     >
                       <option value="">Select</option>
                       <option value="Working">Working</option>
@@ -131,6 +157,7 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                     <input
                       placeholder="Spouse Employment Details"
                       {...register(`familyMembers[${index}].employmentDetails`)}
+                      className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
                     />
                   )}
                 </>
@@ -139,7 +166,10 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
               {type === "Child" && (
                 <div>
                   <label>Gender</label>
-                  <select {...register(`familyMembers[${index}].gender`)}>
+                  <select 
+                  {...register(`familyMembers[${index}].gender`)}
+                  className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
+                  >
                     <option value="">Select</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>

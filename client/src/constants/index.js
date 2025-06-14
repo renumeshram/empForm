@@ -101,6 +101,17 @@ const industries = [
   "State govt",
 ];
 
+const bloodGroups = [
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+  "O+",
+  "O-",
+];
+
 export { 
   languageOptions,
   states,
@@ -108,4 +119,5 @@ export {
   familyMemberTypes,
   titlesByType,
   industries,
+  bloodGroups,
 }
