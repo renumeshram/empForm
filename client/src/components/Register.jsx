@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL
+
 const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -15,18 +18,26 @@ const Register = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.cpassword) {
-      setMessage("Passwords do not match!");
+      // setMessage("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
     try {
       const res = await axios.post(`${apiUrl}/register`, formData);
-      setMessage(res.data.msg || "Registration successful!");
+      // setMessage(res.data.msg || "Registration successful!");
+      navigate("/");
+      toast.success(res.data.msg || "Registration successful!");
+      toast.success("Please Login to continue"); 
+      console.log("Registration Success:"); 
     } catch (error) {
-      setMessage(error.response?.data || "Registration failed.");
+      // setMessage(error.response?.data || "Registration failed.");
+      toast.error(error.response?.data || "Registration failed.");
+      console.error("Registration error:", error); 
     }
   };
 
@@ -99,7 +110,7 @@ const Register = () => {
           </span>
         </form>
       </div>
-      {message && <p>{message}</p>}
+      {/* {message && <p>{message}</p>} */}
     </div>
 
     </div>
