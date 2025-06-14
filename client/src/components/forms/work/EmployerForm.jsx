@@ -1,16 +1,17 @@
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { industries } from "../../../constants";
 
-const industries = [
-  "Autonomous Bodies",
-  "Central govt.",
-  "Indian Armed Forces",
-  "NGO",
-  "Private",
-  "PSU central",
-  "PSU state",
-  "State govt",
-];
+// const industries = [
+//   "Autonomous Bodies",
+//   "Central govt.",
+//   "Indian Armed Forces",
+//   "NGO",
+//   "Private",
+//   "PSU central",
+//   "PSU state",
+//   "State govt",
+// ];
 
 const EmployerForm = ({ index, onRemove }) => {
   const { register, formState: { errors } } = useFormContext();

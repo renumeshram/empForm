@@ -1,4 +1,5 @@
 import React from "react";
+import { education } from "../../../constants";
 
 const EducationEntry = ({ index, register, watch, errors }) => {
   const educationType = watch(`education[${index}].educationType`);
@@ -8,11 +9,11 @@ const EducationEntry = ({ index, register, watch, errors }) => {
       <label>Education Type</label>
       <select {...register(`education[${index}].educationType`)}>
         <option value="">Select</option>
-        <option value="10TH">10th Class</option>
-        <option value="12TH">12th Class</option>
-        <option value="GRAD">Graduation / Diploma / ITI</option>
-        <option value="POSTGRAD">Post-graduation / PhD</option>
-        <option value="CERTIFICATE">Course Certificate / Others</option>
+        { education.map(type => (
+          <option key={type.key} value={type.key}>
+            {type.label}
+            </option>
+        ))}
       </select>
 
       <input

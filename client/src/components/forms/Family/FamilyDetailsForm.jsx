@@ -1,24 +1,8 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
+import { familyMemberTypes, titlesByType } from "../../../constants";
 
-const familyTypes = [
-  "Spouse",
-  "Child",
-  "Father",
-  "Father-in-law",
-  "Mother",
-  "Mother-in-law",
-];
-
-const titlesByType = {
-  Spouse: ["Shri", "Smt."],
-  Child: ["Mt.", "Ms."],
-  Father: ["Shri"],
-  "Father-in-law": ["Shri"],
-  Mother: ["Smt."],
-  "Mother-in-law": ["Smt."],
-};
 
 const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
   const { register, control, handleSubmit, watch } = useForm({
@@ -82,7 +66,7 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                 <label>Family Member Type</label>
                 <select {...register(`familyMembers[${index}].type`)}>
                   <option value="">Select</option>
-                  {familyTypes.map((t) => (
+                  {familyMemberTypes.map((t) => (
                     <option key={t} value={t}>
                       {t}
                     </option>

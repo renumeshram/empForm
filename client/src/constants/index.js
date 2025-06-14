@@ -64,7 +64,48 @@ const states = [
   { name: "West Bengal", code: "WB" },
 ];
 
+const education = [
+  { key: "10TH", label: "10th Class" },
+  { key: "12TH", label: "12th Class" },
+  { key: "GRAD", label: "Graduation / Diploma / ITI" },
+  { key: "POSTGRAD", label: "Post-graduation / PhD" },
+  { key: "CERTIFICATE", label: "Course Certificate / Others" },
+];
+
+const familyMemberTypes = [
+  "Spouse",
+  "Child",
+  "Father",
+  "Father-in-law",
+  "Mother",
+  "Mother-in-law",
+];
+
+const titlesByType = {
+  Spouse: ["Shri", "Smt."],
+  Child: ["Mt.", "Ms."],
+  Father: ["Shri"],
+  "Father-in-law": ["Shri"],
+  Mother: ["Smt."],
+  "Mother-in-law": ["Smt."],
+};
+
+const industries = [
+  "Autonomous Bodies",
+  "Central govt.",
+  "Indian Armed Forces",
+  "NGO",
+  "Private",
+  "PSU central",
+  "PSU state",
+  "State govt",
+];
+
 export { 
   languageOptions,
   states,
+  education,
+  familyMemberTypes,
+  titlesByType,
+  industries,
 }
