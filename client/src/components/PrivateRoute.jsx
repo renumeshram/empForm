@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 
 const PrivateRoute = ({children}) =>{
-    const {isAuthenticated, sessionExpired } = useAuth();
+    const {isAuthenticated, sessionExpired, loggedOut } = useAuth();
     const location = useLocation();
 
     // if(adminRequired){
@@ -18,7 +18,7 @@ const PrivateRoute = ({children}) =>{
     // }
 
 
-    return isAuthenticated || sessionExpired ?( children) : (
+    return isAuthenticated || sessionExpired  || loggedOut ?( children) : (
     <Navigate
      to="/" 
      replace

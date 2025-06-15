@@ -8,7 +8,8 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();         // clears token & user
-    navigate("/");    // redirect to login
+
+    navigate("/", {replace: true, state:{reason: "LOGOUT"}});    // redirect to login
   };
 
   const handleChangeInPassword = () => {

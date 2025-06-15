@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   })
 
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [loggedOut, setLoggedOut] = useState(false);
   const navigate = useNavigate();
 
   const login = (token, user) => {
@@ -34,6 +35,12 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     setEmpData("");
+    if(!sessionExpired){
+      setLoggedOut(true);
+      import('react-toastify').then(({ toast }) => {
+          toast.success('Successfully logged out.', {toastId: "logout-success"});
+        });
+    }
   };
 
   const handleSessionExpired = () => {
@@ -58,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{token,user, login, logout, isAuthenticated, fetchData, empData, sessionExpired, setSessionExpired, handleSessionExpired }}>
+    <AuthContext.Provider value={{token,user, login, logout,loggedOut, isAuthenticated, fetchData, empData, sessionExpired, setSessionExpired, handleSessionExpired }}>
       {children}
     </AuthContext.Provider>
   );
