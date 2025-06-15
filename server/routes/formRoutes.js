@@ -13,6 +13,7 @@ import { changePassword } from '../controller/changePassword.js';
 import { adminLoginHandler } from '../controller/adminController/adminLoginHandler.js';
 import { viewAllEmployeesHandler, viewEmployeeDataHandler } from '../controller/adminController/viewEmployeeDataHandler.js';
 import changeEmployeeApplicationStatus from '../controller/adminController/changeEmployeeApplicationStatus.js';
+import { resetEmployeePasswordHandler } from '../controller/adminController/resetEmployeePW.js';
 
 const  {registrationHandler, loginHandler} = handlers;
 
@@ -51,5 +52,7 @@ router.get('/admin/view-employee/:sapId', viewEmployeeDataHandler)
 router.get('/admin/get-all-employees', viewAllEmployeesHandler)
 
 router.patch('/admin/update-application-status/:sapId', changeEmployeeApplicationStatus)
+
+router.post('/admin/reset-employee-password', resetEmployeePasswordHandler)
 
 export default router;

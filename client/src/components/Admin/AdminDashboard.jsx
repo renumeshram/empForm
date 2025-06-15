@@ -24,7 +24,8 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [employeeData, setEmployeeData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [resetForm, setResetForm] = useState({ empId: "", password: "" });
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [resetPassword, setResetPassword] = useState({ sapId: "", password: "" });
   const [bulkResetPassword, setBulkResetPassword] = useState("");
   const [viewSapId, setviewSapId] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -130,18 +131,22 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       // Replace with actual API call
-      const response = await fetch("/api/admin/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resetForm),
-      });
+      const response = await api.post("admin/reset-employee-password",{
+        sapId : resetPassword.sapId,
+        password: resetPassword.password,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      console.log("🚀 ~ handleResetPassword ~ response:", response.data);
 
-      if (response.ok) {
+      if (response.data.success) {
         setMessage({
           type: "success",
-          text: `Password reset successfully for ${resetForm.empId}`,
+          text: `Password reset successfully for ${resetPassword.sapId}`,
         });
-        setResetForm({ empId: "", password: "" });
+        setResetPassword({ sapId: "", password: "" });
       } else {
         setMessage({ type: "error", text: "Failed to reset password" });
       }
@@ -153,7 +158,7 @@ const AdminDashboard = () => {
 
   const handleBulkResetPassword = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setBulkLoading(true);
     try {
       // Replace with actual API call
       const response = await fetch("/api/admin/reset-all-passwords", {
@@ -174,7 +179,7 @@ const AdminDashboard = () => {
     } catch (error) {
       setMessage({ type: "error", text: "Error resetting all passwords" });
     }
-    setLoading(false);
+    setBulkLoading(false);
   };
 
   const handleViewEmployee = async (e) => {
@@ -594,13 +599,14 @@ const AdminDashboard = () => {
                 <form onSubmit={handleResetPassword} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Employee ID
+                      Employee's SAP ID
                     </label>
                     <input
-                      type="text"
-                      value={resetForm.empId}
+                      type="number"
+                      value={resetPassword.sapId}
+                      min={10000000}
                       onChange={(e) =>
-                        setResetForm({ ...resetForm, empId: e.target.value })
+                        setResetPassword({ ...resetPassword, sapId: e.target.value })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter employee ID"
@@ -613,9 +619,9 @@ const AdminDashboard = () => {
                     </label>
                     <input
                       type="password"
-                      value={resetForm.password}
+                      value={resetPassword.password}
                       onChange={(e) =>
-                        setResetForm({ ...resetForm, password: e.target.value })
+                        setResetPassword({ ...resetPassword, password: e.target.value })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter new password"
@@ -663,10 +669,10 @@ const AdminDashboard = () => {
                   </div>
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={bulkLoading}
                     className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    {loading ? (
+                    {bulkLoading ? (
                       <RefreshCw className="h-4 w-4 animate-spin mr-2" />
                     ) : null}
                     Reset All Passwords

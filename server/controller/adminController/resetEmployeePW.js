@@ -1,4 +1,4 @@
-import Employee from "../../models/employee";
+import Employee from "../../models/employee.js";
 
 const resetEmployeePasswordHandler = async(req , res)=>{
     try{
@@ -30,7 +30,7 @@ const resetEmployeePasswordHandler = async(req , res)=>{
 
         res.status(200).json({
             success: true,
-            msg: `Password reset successfully for employee ${empId}`,
+            msg: `Password reset successfully for employee ${sapId}`,
             statusCode: 200
         });
     }catch(error){
