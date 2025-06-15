@@ -46,8 +46,8 @@ export const AuthProvider = ({ children }) => {
         toast.error('Session expired. Please login again.');
       });
     }
-    navigate("/");
-  }
+    navigate("/", { replace: true , state:{ reason: "TOKEN_EXPIRED" } });
+  };
 
 
   const fetchData =(result) =>{

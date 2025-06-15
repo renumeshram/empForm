@@ -1,9 +1,10 @@
-import {Navigate} from 'react-router-dom'
+import {Navigate, useLocation} from 'react-router-dom'
 import { useAuth } from '../context/AuthContext';
 
 
 const PrivateRoute = ({children}) =>{
-    const {isAuthenticated } = useAuth();
+    const {isAuthenticated, sessionExpired } = useAuth();
+    const location = useLocation();
 
     // if(adminRequired){
     //     const adminToken = localStorage.getItem('adminToken');
@@ -17,7 +18,14 @@ const PrivateRoute = ({children}) =>{
     // }
 
 
-    return isAuthenticated? children : <Navigate to="/" />;
+    return isAuthenticated || sessionExpired ?( children) : (
+    <Navigate
+     to="/" 
+     replace
+     state={{ from: location, reason: "NO_TOKEN" }}
+     
+    />
+);
 }
 
 export default PrivateRoute;

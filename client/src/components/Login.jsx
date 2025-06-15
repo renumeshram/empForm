@@ -1,14 +1,16 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import { useEmployeeData } from "../context/EmployeeDataContext.jsx";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../services/axiosInstance.js"; // Import your axios instance
 
 const Login = () => {
   const { login, fetchData, sessionExpired, setSessionExpired } = useAuth();
   const navigate = useNavigate();
+
+  const location = useLocation();
 
   const {
     updateEducationData,
@@ -117,13 +119,34 @@ const Login = () => {
     }
   };
 
+  const hasShownToast = useRef(false);
+
   React.useEffect(() => {
     // Reset sessionExpired when the user starts typing or loads the login page
+    const reason = location.state?.reason;
+
+
+  if(!hasShownToast.current && reason){
+
+    if(reason === "NO_TOKEN"){
+      toast.warn("Please login to continue.", {toastId: "no token-warning"});
+  
+    } 
+  
+    // if(reason === "TOKEN_EXPIRED"){
+    //   toast.error("Your session expired. Please login again.", {toastId: "token-expired-error"});
+    // }
+  }  
+
+    hasShownToast.current = true; //Prevent future toasts
+
     if (sessionExpired) {
       setSessionExpired(false);
     }
+
+   if(reason) window.history.replaceState({}, document.title);
     // eslint-disable-next-line
-  }, []);
+  }, [location.state]);
 
   return (
     <div className="min-h-screen bg-gray-900 py-20 justify-center items-center">
