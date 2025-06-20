@@ -1,23 +1,28 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import session from 'express-session'
 
 import router from './routes/formRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+  credentials: true,
+}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 
 app.use(session({
-  secret: 'qwert14785',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // set to true if using https
@@ -25,6 +30,7 @@ app.use(session({
 
 
 app.use('/api', router);
+app.use('/api/admin', adminRouter);
 
 app.get("/health",(req,res)=>{
   res.json({message:"Severs is running"})
