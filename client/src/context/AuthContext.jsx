@@ -5,14 +5,22 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
-
-  const [empData, setEmpData] = useState(()=>{
-    const stored = sessionStorage.getItem("empData");
-    return stored? JSON.parse(stored): "";
-  })
+  
+  const storedUser = sessionStorage.getItem("user");
+  let initialUser = null;
+  if (storedUser && storedUser !== "undefined" && storedUser !== "null" && storedUser !== "") {
+    try {
+      initialUser = JSON.parse(storedUser);
+    } catch (e) {
+      initialUser = null;
+    }
+  }
+  const [user, setUser] = useState(initialUser);
+ 
+  // const [empData, setEmpData] = useState(()=>{
+  //   const stored = sessionStorage.getItem("empData");
+  //   return stored? JSON.parse(stored): "";
+  // })
 
   const [sessionExpired, setSessionExpired] = useState(false);
   const [loggedOut, setLoggedOut] = useState(false);
@@ -20,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token, user) => {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    sessionStorage.setItem("user", JSON.stringify(user));
     setToken(token);
     setUser(user);
     setSessionExpired(false);
@@ -30,11 +38,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("empData");
+    sessionStorage.removeItem("user");
+    // sessionStorage.removeItem("empData");
     setToken(null);
     setUser(null);
-    setEmpData("");
+    // setEmpData("");
     if(!sessionExpired){
       setLoggedOut(true);
       import('react-toastify').then(({ toast }) => {
@@ -57,15 +65,17 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const fetchData =(result) =>{
-    setEmpData(result);
-    sessionStorage.setItem("empData", JSON.stringify(result));
-  }
+  // const fetchData =(result) =>{
+  //   setEmpData(result);
+  //   sessionStorage.setItem("empData", JSON.stringify(result));
+  // }
 
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{token,user, login, logout,loggedOut, isAuthenticated, fetchData, empData, sessionExpired, setSessionExpired, handleSessionExpired }}>
+    <AuthContext.Provider value={{token,user, login, logout,loggedOut, isAuthenticated,
+    //  fetchData, empData, sessionExpired, 
+     setSessionExpired, handleSessionExpired }}>
       {children}
     </AuthContext.Provider>
   );
