@@ -19,6 +19,37 @@ import {
 import { useNavigate } from "react-router-dom";
 import api from "../../services/axiosInstance";
 import { toast } from "react-toastify";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+
+const passwordRegex =
+  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@#$%!?*&])[a-zA-Z\d@#$%!?*&]{8,}$/;
+const schema = yup.object().shape({
+  
+  sapId: yup
+    .string()
+    .required("SAP ID is required")
+    .matches(/^[0-9]{8}$/, "Provide a valid SAP ID"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .matches(
+      passwordRegex,
+      "Password must be of minimum length 8 and contain digits, lowercase, uppercase and special characters"
+    ),
+  
+});
+
+const bulkSchema= yup.object().shape({
+  password: yup
+    .string()
+    .required("Password is required")
+    .matches(
+      passwordRegex,
+      "Password must be of minimum length 8 and contain digits, lowercase, uppercase and special characters"
+    ),
+})
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -32,6 +63,24 @@ const AdminDashboard = () => {
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const navigate = useNavigate();
+
+  const{
+    register: registerIndividual,
+    handleSubmit: handleSubmitIndividual,
+    reset: resetIndividual,
+    formState: {errors: errorsIndividual},
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+
+  const {
+  register: registerBulk,
+  handleSubmit: handleSubmitBulk,
+  reset: resetBulk,
+  formState: { errors: errorsBulk },
+} = useForm({
+  resolver: yupResolver(bulkSchema),
+});
 
   // Mock data - replace with actual API calls
   const mockEmployees = [
@@ -96,7 +145,7 @@ const AdminDashboard = () => {
       // Replace with actual API call
       const response = await api.get("admin/get-all-employees", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
         },
       });
 
@@ -126,17 +175,17 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
+  const handleResetPassword = async (resetData) => {
+    // e.preventDefault();
     setLoading(true);
     try {
       // Replace with actual API call
       const response = await api.post("admin/reset-employee-password",{
-        sapId : resetPassword.sapId,
-        password: resetPassword.password,
+        sapId : resetData.sapId,
+        password: resetData.password,
       }, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
         },
       })
       console.log("🚀 ~ handleResetPassword ~ response:", response.data);
@@ -144,9 +193,10 @@ const AdminDashboard = () => {
       if (response.data.success) {
         setMessage({
           type: "success",
-          text: `Password reset successfully for ${resetPassword.sapId}`,
+          text: `Password reset successfully for ${resetData.sapId}`,
         });
-        setResetPassword({ sapId: "", password: "" });
+        // setResetPassword({ sapId: "", password: "" });
+        resetIndividual();
       } else {
         setMessage({ type: "error", text: "Failed to reset password" });
       }
@@ -156,27 +206,32 @@ const AdminDashboard = () => {
     setLoading(false);
   };
 
-  const handleBulkResetPassword = async (e) => {
-    e.preventDefault();
+  const handleBulkResetPassword = async ({password}) => {
+    // e.preventDefault();
     setBulkLoading(true);
     try {
       // Replace with actual API call
-      const response = await fetch("/api/admin/reset-all-passwords", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: bulkResetPassword }),
+      const response = await api.post("admin/reset-all-passwords",
+        {password}, 
+        {
+        headers: { 
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
+        },
+        
       });
 
-      if (response.ok) {
+      if (response.data) {
         setMessage({
           type: "success",
-          text: "All passwords reset successfully",
+          text:  response.data?.msg ||"All passwords reset successfully",
         });
-        setBulkResetPassword("");
+        resetBulk();
+        // setBulkResetPassword("");
       } else {
         setMessage({ type: "error", text: "Failed to reset all passwords" });
       }
     } catch (error) {
+      console.log("🚀 ~ handleBulkResetPassword ~ error:", error)
       setMessage({ type: "error", text: "Error resetting all passwords" });
     }
     setBulkLoading(false);
@@ -188,7 +243,7 @@ const AdminDashboard = () => {
     try {
       const response = await api.get(`admin/view-employee/${viewSapId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
         },
       });
 
@@ -226,7 +281,7 @@ const AdminDashboard = () => {
       setLoading(true);
       const response = await api.patch(`admin/update-application-status/${sapId}`, { isSubmitted: newStatus },{
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
         },
       });
       if (response.data.success) {
@@ -301,8 +356,8 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     // Add logout logic here
-    localStorage.removeItem("adminToken"); // Example token removal
-    localStorage.removeItem("adminUser"); // Example user data removal
+    sessionStorage.removeItem("adminToken"); // Example token removal
+    sessionStorage.removeItem("adminUser"); // Example user data removal
     // Redirect to login page or home page
     navigate("/admin/login");
 
@@ -558,7 +613,7 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <button
                   onClick={() => setActiveTab("resetPassword")}
-                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <Key className="h-5 w-5 text-blue-600" />
                   <span>Reset Password</span>
@@ -596,22 +651,24 @@ const AdminDashboard = () => {
                   <Key className="h-5 w-5 mr-2 text-blue-600" />
                   Reset Individual Password
                 </h3>
-                <form onSubmit={handleResetPassword} className="space-y-4">
+                <form onSubmit={handleSubmitIndividual(handleResetPassword)} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Employee's SAP ID
                     </label>
                     <input
                       type="number"
-                      value={resetPassword.sapId}
+                      // value={resetPassword.sapId}
                       min={10000000}
-                      onChange={(e) =>
-                        setResetPassword({ ...resetPassword, sapId: e.target.value })
-                      }
+                      // onChange={(e) =>
+                      //   setResetPassword({ ...resetPassword, sapId: e.target.value })
+                      // }
+                      {...registerIndividual("sapId")}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter employee ID"
-                      required
+                      
                     />
+                    <p className="text-red-500 text-sm">{errorsIndividual.sapId?.message}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -619,19 +676,21 @@ const AdminDashboard = () => {
                     </label>
                     <input
                       type="password"
-                      value={resetPassword.password}
-                      onChange={(e) =>
-                        setResetPassword({ ...resetPassword, password: e.target.value })
-                      }
+                      // value={resetPassword.password}
+                      // onChange={(e) =>
+                      //   setResetPassword({ ...resetPassword, password: e.target.value })
+                      // }
+                      {...registerIndividual("password")}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter new password"
-                      required
+                      
                     />
+                    <p className="text-red-500 text-sm">{errorsIndividual.password?.message}</p>
                   </div>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
                   >
                     {loading ? (
                       <RefreshCw className="h-4 w-4 animate-spin mr-2" />
@@ -647,19 +706,21 @@ const AdminDashboard = () => {
                   <RefreshCw className="h-5 w-5 mr-2 text-red-600" />
                   Reset All Passwords
                 </h3>
-                <form onSubmit={handleBulkResetPassword} className="space-y-4">
+                <form onSubmit={handleSubmitBulk(handleBulkResetPassword)} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       New Password for All Users
                     </label>
                     <input
                       type="password"
-                      value={bulkResetPassword}
-                      onChange={(e) => setBulkResetPassword(e.target.value)}
+                      // value={bulkResetPassword}
+                      // onChange={(e) => setBulkResetPassword(e.target.value)}
+                      {...registerBulk("password")}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                       placeholder="Enter new password for all users"
                       required
                     />
+                    <p className="text-red-500 text-sm">{errorsBulk.password?.message}</p>
                   </div>
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p className="text-sm text-red-800">
@@ -670,7 +731,7 @@ const AdminDashboard = () => {
                   <button
                     type="submit"
                     disabled={bulkLoading}
-                    className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
                   >
                     {bulkLoading ? (
                       <RefreshCw className="h-4 w-4 animate-spin mr-2" />
