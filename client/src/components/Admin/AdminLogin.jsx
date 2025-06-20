@@ -24,7 +24,7 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post("/admin/login", {
+      const response = await api.post("admin/login", {
         userId: formData.userId,
         password: formData.password,
       });
@@ -33,8 +33,8 @@ const AdminLogin = () => {
 
       if (data && data.token) {
         //store admin token and user info
-        localStorage.setItem("adminToken", data.token);
-        localStorage.setItem("adminUser", JSON.stringify(data.user));
+        sessionStorage.setItem("adminToken", data.token);
+        sessionStorage.setItem("adminUser", JSON.stringify(data.user));
 
         toast.success("Admin login successful!");
 

@@ -111,32 +111,32 @@ const PersonalDetailsForm = ({ onNext }) => {
   //   }, [personalData, setValue]);
 
   const getInitialFormValues = (personalData) => {
-    if (!personalData?.pData || !personalData.emp) return {};
+    if (!personalData.emp) return {};
 
     return {
-      title: personalData.pData.title || "",
-      firstName: personalData.pData.firstName || "",
-      lastName: personalData.pData.lastName || "",
-      sapId: personalData.emp.sapId || "",
-      adhaarId: personalData.pData.adhaarId || "",
-      birthplace: personalData.pData.birthplace || "",
-      category: personalData.pData.category || "",
-      dob: personalData.pData.dob || "",
-      email: personalData.emp.email || "",
-      exServiceman: personalData.pData.exServiceman || "",
-      gender: personalData.pData.gender || "",
-      hindiKnowledge: personalData.pData.hindiKnowledge || "",
-      idMark1: personalData.pData.idMark1 || "",
-      idMark2: personalData.pData.idMark2 || "",
-      langHindiRead: personalData.pData.langHindiRead || false,
-      langHindiSpeak: personalData.pData.langHindiSpeak || false,
-      langHindiWrite: personalData.pData.langHindiWrite || false,
-      mobile: personalData.pData.mobile || "",
-      motherTongue: personalData.pData.motherTongue || "",
-      pwd: personalData.pData.pwd || "",
-      religion: personalData.pData.religion || "",
-      state: personalData.pData.state || "",
-      subCategory: personalData.pData.subCategory || "",
+      title: personalData?.pData?.title || "",
+      firstName: personalData?.pData?.firstName || "",
+      lastName: personalData?.pData?.lastName || "",
+      sapId: personalData?.emp?.sapId || "",
+      adhaarId: personalData?.pData?.adhaarId || "",
+      birthplace: personalData?.pData?.birthplace || "",
+      category: personalData?.pData?.category || "",
+      dob: personalData?.pData?.dob || "",
+      email: personalData?.emp?.email || "",
+      exServiceman: personalData?.pData?.exServiceman || "",
+      gender: personalData?.pData?.gender || "",
+      hindiKnowledge: personalData?.pData?.hindiKnowledge || "",
+      idMark1: personalData?.pData?.idMark1 || "",
+      idMark2: personalData?.pData?.idMark2 || "",
+      langHindiRead: personalData?.pData?.langHindiRead || false,
+      langHindiSpeak: personalData?.pData?.langHindiSpeak || false,
+      langHindiWrite: personalData?.pData?.langHindiWrite || false,
+      mobile: personalData?.pData?.mobile || "",
+      motherTongue: personalData?.pData?.motherTongue || "",
+      pwd: personalData?.pData?.pwd || "",
+      religion: personalData?.pData?.religion || "",
+      state: personalData?.pData?.state || "",
+      subCategory: personalData?.pData?.subCategory || "",
     };
   };
 
