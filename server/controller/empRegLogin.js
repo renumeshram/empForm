@@ -42,9 +42,10 @@ const loginHandler = async (req, res) => {
     let empFound = await Employee.findOne({sapId}).select('+password')
 
     if (!empFound) {
-        return res.json({ msg: "Employee not found....Please register!!!" })
+        return res.status(404).json({ msg: "Employee not found....Please register!!!" })
     }
-
+    
+    // console.log("🚀 ~ loginHandler ~ empFound:", empFound)
     empFound.checkpw(password, async function (err, result) {
         if (err) return next(err);
         if (!result) {
@@ -55,7 +56,7 @@ const loginHandler = async (req, res) => {
         console.log("Employee Id:", req.session.employeeId);
         
         const token = jwt.sign(
-            {id: empFound._id},
+            {id: empFound._id, role: 'user'},
             process.env.JWT_SECRET,
             {expiresIn: '1h'} // Set expiry to 1 minute for testing
         )

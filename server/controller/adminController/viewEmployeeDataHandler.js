@@ -39,9 +39,9 @@ const viewEmployeeDataHandler = async (req, res) => {
         // based on your database structure for personal, education, family, etc.
         // For now, returning employee data
 
-        const {employeeId:id,...perDetails} = personalDetails.toObject()
-        const {education} = educationDetails
-        const {experiences} = workExperience
+        const {employeeId:id,...perDetails} = personalDetails.toObject() || {}
+        const {education} = educationDetails || []
+        const {experiences} = workExperience || []
         const {familyMembers} = familyDetails || []
         // const address = [...addressDetails]
 

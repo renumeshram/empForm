@@ -10,20 +10,21 @@ const adminLoginHandler = async (req, res)=>{
         if(userId !== 'Admin'|| password !== process.env.ADMIN_PASSWORD){
             return res.status(401).json({
                 success: false,
-                msg: "Invalid admin credentials",
+                msg: "Invalid admin credentials", 
                 statusCode: 401,
             })
         }
 
         const adminToken = jwt.sign(
             { id: 'admin', role: 'admin'},
-            process.env.JWT_SECRET,
+            process.env.ADMIN_JWT_SECRET,
             { expiresIn: '1hr'}
         )
 
         res.status(200).json({
             success: true,
             token: adminToken,
+            user: userId,
             msg: "Admin login successful",
             statusCode: 200,
         })
