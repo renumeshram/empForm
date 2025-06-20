@@ -11,6 +11,8 @@ import { useAuth } from "./context/AuthContext";
 import api from "./services/axiosInstance";
 import AdminLogin from "./components/Admin/AdminLogin";
 import AdminDashboard from "./components/Admin/AdminDashboard";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function App() {
   const { handleSessionExpired } = useAuth();
@@ -29,6 +31,7 @@ function App() {
 
   return (
     <div>
+      <Header/>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -56,9 +59,22 @@ function App() {
 
       <Route
         path="/admin/dashboard"
-        element= {<AdminDashboard/>}
+        element= {
+          <PrivateRoute adminRequired ={ true}>
+            <AdminDashboard/>
+          </PrivateRoute>
+        }
         />
       </Routes>
+      <Footer 
+        companyName="NMDC Limited Kirandul Complex"
+        developerName="C & IT Department"
+        version="2.1.0"
+        // customLinks={[
+        //   { label: 'Privacy', url: '/privacy', external: false },
+        //   { label: 'Support', url: '/support', external: false }
+        // ]}
+      />
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
