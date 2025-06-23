@@ -52,6 +52,11 @@ const MultiStepForm = () => {
     }
   };
 
+  const handleBack = ()=>{
+    if(currentStep > 0){
+      setStep((prev)=>prev-1);
+    }
+  }
   const handleDownloadForm = (dataToDownload) => {
     if (isSubmitted && dataToDownload) {
       generatePDF(dataToDownload);
@@ -88,7 +93,7 @@ const MultiStepForm = () => {
             <ReviewForm
               data={formData}
               token={token}
-              onBack={() => window.history.back()}
+              onBack={handleBack}
               onSubmit={() => handleSubmit(reviewData)} // ✅ Use backend data
               onDataReady={(data) => setReviewData(data)} // ✅ Receive normalized data
             />
