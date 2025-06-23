@@ -61,6 +61,11 @@ const AdminDashboard = () => {
   const [viewSapId, setviewSapId] = useState("");
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [employeeStats, setEmployeeStats ] = useState({
+    totalEmployees: 0,
+    submittedApplications: 0,
+    pendingApplications: 0,
+  })
 
   const navigate = useNavigate();
 
@@ -137,7 +142,27 @@ const AdminDashboard = () => {
     if (activeTab === "applicationStatus") {
       fetchAllEmployees();
     }
+    if(activeTab === "overview"){
+      fetchEmployeeStats();
+    }
   }, [activeTab]);
+
+  const fetchEmployeeStats = async() =>{
+    try{
+      const response = await api.get("admin/get-employee-stats",{
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("adminToken")}`,
+        },
+      })
+      if(response.data ){
+        setEmployeeStats(response.data.data);
+        console.log("Employee statistics",employeeStats)
+      }
+    }catch(error){
+      console.log("🚀 ~ fetchEmployeeStats ~ error:", error)
+      
+    }
+  }
 
   const fetchAllEmployees = async () => {
     setLoading(true);
@@ -567,7 +592,7 @@ const AdminDashboard = () => {
                       Total Employees
                     </p>
                     <p className="text-3xl font-bold text-gray-900">
-                      {mockEmployees.length}
+                      {employeeStats.totalEmployees}
                     </p>
                   </div>
                   <Users className="h-12 w-12 text-blue-600" />
@@ -578,12 +603,13 @@ const AdminDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">
-                      Active Employees
+                      Submitted Applications
                     </p>
                     <p className="text-3xl font-bold text-green-600">
                       {
-                        mockEmployees.filter((emp) => emp.status === "Active")
-                          .length
+                        employeeStats.submittedApplications
+                        // mockEmployees.filter((emp) => emp.status === "Active")
+                        //   .length
                       }
                     </p>
                   </div>
@@ -595,10 +621,13 @@ const AdminDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">
-                      Departments
+                      Pending Applications
                     </p>
                     <p className="text-3xl font-bold text-purple-600">
-                      {new Set(mockEmployees.map((emp) => emp.department)).size}
+                      {
+                        employeeStats.pendingApplications
+                        // new Set(mockEmployees.map((emp) => emp.department)).size
+                      }
                     </p>
                   </div>
                   <Database className="h-12 w-12 text-purple-600" />

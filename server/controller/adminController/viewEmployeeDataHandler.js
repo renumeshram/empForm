@@ -87,6 +87,7 @@ const viewAllEmployeesHandler = async (req, res) => {
 
         // Get total count for pagination
         const totalEmployees = await Employee.countDocuments({});
+        const submittedApplications = await Employee.countDocuments({ isSubmitted: true})
         const totalPages = Math.ceil(totalEmployees / limit);
 
         res.status(200).json({
@@ -117,8 +118,34 @@ const viewAllEmployeesHandler = async (req, res) => {
     }
 };
 
+const employeeStats = async(req, res) =>{
+    try{
+        const totalEmployees = await Employee.countDocuments();
+        const submittedApplications = await Employee.countDocuments({ isSubmitted: true });
+        const pendingApplications = await Employee.countDocuments({ isSubmitted: false})
+
+        res.status(200).json({
+            success: true,
+            msg: "Employee stats retrieved successfully",
+            statusCode: 200,
+            data:{
+                totalEmployees,
+                submittedApplications,
+                pendingApplications,
+            }
+        })
+    }catch(error){
+        console.log("🚀 ~ employeeStats ~ error:", error)
+        res.status(500).json({
+            success: false,
+            msg: "Internal server error",
+            statusCode: 500
+        })
+    }
+}
 
 export {
     viewEmployeeDataHandler,
-    viewAllEmployeesHandler
+    viewAllEmployeesHandler,
+    employeeStats,
 };

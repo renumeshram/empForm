@@ -3,7 +3,7 @@ import express from 'express';
 const adminRouter = express.Router();
 
 import { adminLoginHandler } from '../controller/adminController/adminLoginHandler.js';
-import { viewAllEmployeesHandler, viewEmployeeDataHandler } from '../controller/adminController/viewEmployeeDataHandler.js';
+import { employeeStats, viewAllEmployeesHandler, viewEmployeeDataHandler } from '../controller/adminController/viewEmployeeDataHandler.js';
 import changeEmployeeApplicationStatus from '../controller/adminController/changeEmployeeApplicationStatus.js';
 import { resetAllEmployeePasswordHandler, resetEmployeePasswordHandler } from '../controller/adminController/resetEmployeePW.js';
 import { validateAdminLogin, validateResetAllPassword, validateResetPassword, verifyAdminToken, adminOnly } from '../middleware/adminMiddleware/index.js';
@@ -19,5 +19,7 @@ adminRouter.patch('/update-application-status/:sapId',verifyAdminToken, adminOnl
 adminRouter.post('/reset-employee-password',verifyAdminToken, adminOnly, validateResetPassword, resetEmployeePasswordHandler)
 
 adminRouter.post('/reset-all-passwords', verifyAdminToken, adminOnly, validateResetAllPassword, resetAllEmployeePasswordHandler)
+
+adminRouter.get('/get-employee-stats', verifyAdminToken, adminOnly,employeeStats)
 
 export default adminRouter;
