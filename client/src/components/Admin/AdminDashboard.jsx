@@ -538,7 +538,7 @@ const AdminDashboard = () => {
               { id: "overview", label: "Overview", icon: Database },
               { id: "resetPassword", label: "Reset Password", icon: Key },
               { id: "viewEmployee", label: "View Employee", icon: Eye },
-              { id: "viewAll", label: "All Employees", icon: Users },
+              // { id: "viewAll", label: "All Employees", icon: Users },
               {
                 id: "applicationStatus",
                 label: "Application Status",
@@ -649,17 +649,17 @@ const AdminDashboard = () => {
                 </button>
                 <button
                   onClick={() => setActiveTab("viewEmployee")}
-                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <Eye className="h-5 w-5 text-green-600" />
                   <span>View Employee</span>
                 </button>
                 <button
-                  onClick={() => setActiveTab("viewAll")}
-                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => setActiveTab("applicationStatus")}
+                  className="flex items-center justify-center space-x-2 p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <Users className="h-5 w-5 text-purple-600" />
-                  <span>All Employees</span>
+                  <span>Applications</span>
                 </button>
               </div>
             </div>
@@ -875,7 +875,7 @@ const AdminDashboard = () => {
         )}
 
         {/* View All Employees Tab */}
-        {activeTab === "viewAll" && (
+        {/* {activeTab === "viewAll" && (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-gray-900">All Employees</h2>
 
@@ -908,7 +908,7 @@ const AdminDashboard = () => {
               />
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Veiw Application Status */}
         {activeTab === "applicationStatus" && (
