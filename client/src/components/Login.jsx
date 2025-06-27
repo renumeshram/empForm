@@ -88,13 +88,18 @@ const Login = () => {
         toast.success(res?.data?.msg || "Login successful!");
         toast.success("Getting employee's data...");
 
-        const [personal, education, work, family, address] = await Promise.all([
+        const [personal, education, family, work, address] = await Promise.all([
           api.get(`/personalDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
           api.get(`/educationDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          api.get(`/familyDetails`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -114,12 +119,19 @@ const Login = () => {
               Authorization: `Bearer ${token}`,
             },
           }),
+          api.get(`/addressDetails`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
         ]);
         console.log(work);
 
         updatePersonalData(personal.data);
         updateEducationData(education.data);
+        updateFamilyData(family.data);
         updateWorkData(work.data);
+        updateAddressData(address.data);
         navigate("/form");
         // updateFamilyData(family.data);
         // updateAddressData(address.data);

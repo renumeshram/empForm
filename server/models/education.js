@@ -9,7 +9,7 @@ const completeEducationSchema = new mongoose.Schema({
   educationType: String,
   instituteName: String,
   certificateType: String,
-  duration: String,
+  duration: Number,
   grade: String,
   medium: String,
   hindiSubjectLevel: String,
