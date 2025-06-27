@@ -312,9 +312,9 @@ const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
           fieldOrder={personalFields}
         />
          <Section title="Education Details" data={userData.educationDetails} />
-        {/* <Section title="Family Details" data={userData.familyDetails} />
+        <Section title="Family Details" data={userData.familyDetails} />
         <Section title="Address Details" data={userData.addressDetails} />
-        <Section title="Work Experience" data={userData.workExperience} /> */}
+        <Section title="Work Experience" data={userData.workExperience} />
       </div>
 
       <div className="flex justify-between pt-6">
