@@ -9,7 +9,7 @@ import { v4 as uuidv4} from "uuid";
 const WorkExperienceForm = ({ onNext }) => {
   const {token, sessionExpired} = useAuth()
 
-  const {workData, updateWorkData } =useEmployeeData();
+  const {workData, updateChangeInWorkData } =useEmployeeData();
 
   const methods = useForm({
     defaultValues: {
@@ -32,7 +32,7 @@ const WorkExperienceForm = ({ onNext }) => {
       //   experiences: data.experiences
       // }
 
-      updateWorkData({wData: {experiences: data.experiences}});
+      updateChangeInWorkData({wData: {experiences: data.experiences}});
   
       const success =  await saveSectionData("workExperience", data.experiences, token);
   

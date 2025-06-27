@@ -11,7 +11,7 @@ const workExperienceHandler = async (req, res) => {
             return res.status(401).json({ message: "Unauthorized: Employee ID missing" });
         }
     
-        console.log("Requesting we are getting", req.body)
+        // console.log("Request we are getting", req.body)
     
         const savedWorkExperiences = await WorkExperience.findOneAndUpdate(
             { employeeId },
