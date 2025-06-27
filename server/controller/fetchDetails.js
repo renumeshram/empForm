@@ -80,8 +80,28 @@ const fetchFamily = async(req, res)=>{
     
 
 }
-const fetchAddress = ()=>{
+const fetchAddress = async(req, res)=>{
+    try{
+        const employeeId = req.user.id
+        console.log("🚀 ~ fetchAddress ~ employeeId:", employeeId)
 
+        const addressData = await AddressDetails.findOne({ employeeId})
+        console.log("🚀 ~ fetchAddress ~ addressData:", addressData)
+
+        return res.status(200).json({
+            aData: addressData,
+            success: true,
+            msg: "Address data successfully fetched from DB"
+        })
+    }catch(error){
+        console.log("🚀 ~ fetchAddress ~ error:", error)
+
+        res.status(500).json({
+            success: false,
+            msg: "Error in fetching address data",
+        })
+        
+    }
 }
 const fetchWork = async(req, res)=>{
     try{

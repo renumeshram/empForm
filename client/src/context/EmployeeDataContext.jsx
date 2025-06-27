@@ -130,6 +130,24 @@ export const EmployeeDataProvider = ({ children }) => {
     });
   };
 
+  const updateChangeInAddressData = (type, updatedAddress) =>{
+    setAddressData((prev) =>{
+      const updated = {
+        ...prev,
+        aData: {
+          ...prev?.aData,
+          [type]: {
+            ...prev?.aData?.[type],
+            ...updatedAddress
+          }
+        }
+
+      }
+      sessionStorage.setItem("addressData", JSON.stringify(updated))
+      return updated;
+    })
+  }
+
   return (
     <EmployeeDataContext.Provider
       value={{
@@ -148,6 +166,7 @@ export const EmployeeDataProvider = ({ children }) => {
         updateChangeInPersonalData,
         updateChangeInEducationData,
         updateChangeInWorkData,
+        updateChangeInAddressData,
       }}
     >
       {children}
