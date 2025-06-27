@@ -1,25 +1,99 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
-import { familyMemberTypes, titlesByType } from "../../../constants";
+import {
+  familyMemberTypes,
+  titlesByType,
+  industries,
+} from "../../../constants";
 import { bloodGroups } from "../../../constants";
+import { useEmployeeData } from "../../../context/EmployeeDataContext";
+import { saveSectionData } from "../../../services/formApi";
 
+const FamilyDetailsForm = ({ onNext }) => {
+  const { token, sessionExpired } = useAuth();
 
-const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
-  const { register, control, handleSubmit, watch } = useForm({
+  const { familyData, updateFamilyData } = useEmployeeData();
+
+  // Transform backend data (boolean) to form data (string)
+  const transformFamilyDataForForm = (familyMembers) => {
+    return (
+      familyMembers?.map((member) => ({
+        ...member,
+        isWorking:
+          member.isWorking === true
+            ? "Working"
+            : member.isWorking === false
+            ? "Not-Working"
+            : "",
+      })) || []
+    );
+  };
+
+  const transformFamilyDataForBackend = (familyMembers) => {
+    return familyMembers.map((member) => ({
+      ...member,
+      isWorking:
+        member.isWorking === "Working"
+          ? true
+          : member.isWorking === "Not-Working"
+          ? false
+          : null,
+    }));
+  };
+
+  const methods = useForm({
     defaultValues: {
-      familyMembers: defaultValues.length ? defaultValues : [],
+      familyMembers: transformFamilyDataForForm(
+        familyData?.famData?.familyMembers
+      ),
     },
   });
 
-  const { sessionExpired } = useAuth(); // Assuming useAuth is imported from your AuthContext
+  const { control, handleSubmit, watch, register } = methods;
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "familyMembers",
   });
+  // }
 
-  const onSubmit = (data) => {
-    onNext(data.familyMembers);
+  // defaultValues = [] }) => {
+  //   const { register, control, handleSubmit, watch } = useForm({
+  //     defaultValues: {
+  //       familyMembers: defaultValues.length ? defaultValues : [],
+  //     },
+  //   });
+
+  //   const { sessionExpired } = useAuth(); // Assuming useAuth is imported from your AuthContext
+  //   const { fields, append, remove } = useFieldArray({
+  //     control,
+  //     name: "familyMembers",
+  //   });
+
+  const onSubmit = async (data) => {
+    try {
+      // Transform the data before sending
+      const transformedFamilyMembers = transformFamilyDataForBackend(
+        data.familyMembers
+      );
+
+      updateFamilyData({
+        famData: { familyMembers: transformedFamilyMembers },
+      });
+
+      const success = await saveSectionData(
+        "familyDetails",
+        transformedFamilyMembers,
+        token
+      );
+
+      if (success) {
+        onNext(transformedFamilyMembers);
+      }
+    } catch (error) {
+      console.error("Error in saving family members details", error);
+    }
   };
 
   return (
@@ -36,16 +110,17 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
         className="px-4 py-2 bg-green-600 text-white rounded"
         onClick={() =>
           append({
-            type: "",
+            relationship: "",
             title: "",
             name: "",
             surname: "",
-            aadhar: "",
+            aadharNumber: "",
             bloodGroup: "",
             dob: "",
             cityOfBirth: "",
-            status: "",
-            employmentDetails: "",
+            isWorking: "",
+            companyType: "",
+            companyName: "",
             gender: "",
           })
         }
@@ -54,8 +129,8 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
       </button>
 
       {fields.map((member, index) => {
-        const type = watch(`familyMembers[${index}].type`);
-        const titles = titlesByType[type] || [];
+        const relationship = watch(`familyMembers[${index}].relationship`);
+        const titles = titlesByType[relationship] || [];
 
         return (
           <div
@@ -65,9 +140,9 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label>Family Member Type</label>
-                <select 
-                {...register(`familyMembers[${index}].type`)}
-                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
+                <select
+                  {...register(`familyMembers[${index}].relationship`)}
+                  className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
                 >
                   <option value="">Select</option>
                   {familyMemberTypes.map((t) => (
@@ -80,9 +155,9 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
 
               <div>
                 <label>Title</label>
-                <select 
-                {...register(`familyMembers[${index}].title`)}
-                className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
+                <select
+                  {...register(`familyMembers[${index}].title`)}
+                  className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
                 >
                   <option value="">Select</option>
                   {titles.map((title) => (
@@ -96,7 +171,7 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
               <label>First Name</label>
               <input
                 placeholder="First Name"
-                {...register(`familyMembers[${index}].name`)} 
+                {...register(`familyMembers[${index}].name`)}
                 className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               />
               <label>Surname</label>
@@ -117,8 +192,8 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                 className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
               >
                 <option value="">Select Blood Group</option>
-                {bloodGroups.map((bg)=>(
-                  <option key ={bg} value={bg}>
+                {bloodGroups.map((bg) => (
+                  <option key={bg} value={bg}>
                     {bg}
                   </option>
                 ))}
@@ -138,12 +213,12 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
               />
 
               {/* Conditional Fields */}
-              {type === "Spouse" && (
+              {relationship === "Spouse" && (
                 <>
                   <div>
                     <label>Spouse Status</label>
                     <select
-                      {...register(`familyMembers[${index}].employmentStatus`)}
+                      {...register(`familyMembers[${index}].isWorking`)}
                       className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
                     >
                       <option value="">Select</option>
@@ -152,23 +227,38 @@ const FamilyDetailsForm = ({ onNext, defaultValues = [] }) => {
                     </select>
                   </div>
 
-                  {watch(`familyMembers[${index}].employmentStatus`) ===
-                    "Working" && (
-                    <input
-                      placeholder="Spouse Employment Details"
-                      {...register(`familyMembers[${index}].employmentDetails`)}
-                      className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
-                    />
+                  {watch(`familyMembers[${index}].isWorking`) === "Working" && (
+                    <div>
+                      <label>Organization Type</label>
+                      <select
+                        {...register(`familyMembers[${index}].companyType`)}
+                        className="w-full mb-2 p-2 border rounded"
+                      >
+                        <option value="">Select Industry</option>
+                        {industries.map((ind, idx) => (
+                          <option key={idx} value={ind}>
+                            {ind}
+                          </option>
+                        ))}
+                      </select>
+
+                      <label>Organization Name</label>
+                      <input
+                        placeholder="Organization Name"
+                        {...register(`familyMembers[${index}].companyName`)}
+                        className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500 ml-2"
+                      />
+                    </div>
                   )}
                 </>
               )}
 
-              {type === "Child" && (
+              {relationship === "Child" && (
                 <div>
                   <label>Gender</label>
-                  <select 
-                  {...register(`familyMembers[${index}].gender`)}
-                  className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
+                  <select
+                    {...register(`familyMembers[${index}].gender`)}
+                    className="mb-2 border rounded p-2 border-black focus:outline-none focus:border-blue-500"
                   >
                     <option value="">Select</option>
                     <option value="Male">Male</option>
