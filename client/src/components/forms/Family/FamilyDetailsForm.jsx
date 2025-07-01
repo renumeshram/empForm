@@ -26,6 +26,7 @@ const FamilyDetailsForm = ({ onNext }) => {
             : member.isWorking === false
             ? "Not-Working"
             : "",
+        dob: member.dob? member.dob.slice(0, 10): ""
       })) || []
     );
   };

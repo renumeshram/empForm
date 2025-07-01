@@ -36,7 +36,12 @@ const EducationDetailsForm = ({ onNext, defaultValues = [] }) => {
       reset({ education: [] }); // ✅ Clear any stale form state
 
       educationData.eData.education.forEach((edu) => {
-        append(edu); // ✅ Correctly populates FieldArray
+        const formattedEdu ={
+          ...edu,
+          startDate: edu.startDate? edu.startDate.slice(0, 10) : "",
+          passingDate: edu.passingDate? edu.passingDate.slice(0, 10) : "",
+        }
+        append(formattedEdu); // ✅ Correctly populates FieldArray
       });
     }
   }, [educationData, append, reset]);
