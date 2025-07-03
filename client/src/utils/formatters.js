@@ -12,9 +12,10 @@ export const shouldHideField = (key) => {
   );
 };
 
-export const formatValue = (value) => {
+export const formatValue = (value, key) => {
   if (typeof value === "boolean") return value ? "Yes" : "No";
-  if (typeof value === "string" && !isNaN(Date.parse(value))) {
+  //Only format as date if the key  contains 'date'
+  if (typeof value === "string" && key && (key.toLowerCase().includes("date") || key.toLowerCase().includes("dob")) && !isNaN(Date.parse(value))) {
     const date = new Date(value);
     return date.toLocaleDateString("en-US", {
       year: "numeric",

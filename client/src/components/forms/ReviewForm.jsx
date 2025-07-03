@@ -82,7 +82,7 @@ const renderValue = (value) => {
                         <span className="font-medium capitalize">
                           {changeDisplayMain(k)}:
                         </span>{" "}
-                        {formatValue(v)}
+                        {formatValue(v, k)}
                       </li>
                     )
                 )}
@@ -105,14 +105,14 @@ const renderValue = (value) => {
                 <span className="font-medium capitalize">
                   {k.replace(/([A-Z])/g, " $1")}:
                 </span>{" "}
-                {formatValue(v)}
+                {formatValue(v, k)}
               </li>
             )
         )}
       </ul>
     );
   }
-  return formatValue(value);
+  return formatValue(value, undefined);
 };
 
 // Section component for rendering object data in ordered keys
