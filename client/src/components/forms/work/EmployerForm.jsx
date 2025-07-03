@@ -75,6 +75,7 @@ const EmployerForm = ({ index, onRemove }) => {
 
       <input
         {...register(`experiences.${index}.scaleOnLeaving`)}
+        type="number"
         placeholder="Scale on Leaving"
         className="w-full mb-2 p-2 border rounded"
       />

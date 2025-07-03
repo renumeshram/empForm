@@ -21,7 +21,7 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
     reset,
   } = useForm({
     defaultValues: {
-      local: addressData?.local || {
+      local: addressData?.aData?.local || {
         addressLine1: "",
         addressLine2: "",
         city: "",
@@ -31,7 +31,7 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
         postOffice: "",
         policeStation: "",
       },
-      permanent: addressData?.permanent || {
+      permanent: addressData?.aData?.permanent || {
         addressLine1: "",
         addressLine2: "",
         city: "",
@@ -41,7 +41,7 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
         postOffice: "",
         policeStation: "",
       },
-      correspondence: addressData?.correspondence || {
+      correspondence: addressData?.aData?.correspondence || {
         addressLine1: "",
         addressLine2: "",
         city: "",
@@ -59,11 +59,11 @@ const AddressForm = ({ onNext, defaultValues = {} }) => {
   const correspondenceAddress = watch("correspondence");
 
   useEffect(() => {
-    if (addressData) {
+    if (addressData && addressData.aData) {
       reset({
-        local: addressData.aData?.local || {},
-        permanent: addressData.aData?.permanent || {},
-        correspondence: addressData.aData?.correspondence || {},
+        local: addressData.aData.local || {},
+        permanent: addressData.aData.permanent || {},
+        correspondence: addressData.aData.correspondence || {},
       });
 
       // ✅ Fixed: Added null check for addressData.correspondence
