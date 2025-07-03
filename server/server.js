@@ -5,6 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session'
+import rateLimit from 'express-rate-limit'
 
 import router from './routes/formRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
@@ -13,6 +14,15 @@ import adminRouter from './routes/adminRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const limiter = rateLimit({
+  windowMs: 10* 60* 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Too many requests from this IP address, please try later."
+})
+
+app.use(limiter)
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true,
