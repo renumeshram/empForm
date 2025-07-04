@@ -6,6 +6,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session'
 import rateLimit from 'express-rate-limit'
+import MongoStore from 'connect-mongo';
 
 import router from './routes/formRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
@@ -14,6 +15,9 @@ import adminRouter from './routes/adminRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ Trust Render proxy for correct IPs
+app.set('trust proxy', 1);
+
 const limiter = rateLimit({
   windowMs: 10* 60* 1000,
   max: 100,
@@ -21,8 +25,9 @@ const limiter = rateLimit({
   legacyHeaders: false,
   message: "Too many requests from this IP address, please try later."
 })
-
 app.use(limiter)
+
+
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true,
@@ -35,7 +40,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } // set to true if using https
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+  }),
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production', 
+  } // set to true if using https
 }));
 
 
