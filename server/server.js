@@ -27,6 +27,7 @@ const limiter = rateLimit({
 })
 app.use(limiter)
 
+console.log("Origin", process.env.CORS_ORIGIN)
 
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
