@@ -71,7 +71,7 @@ const renderValue = (value) => {
         {value.map((item, idx) => (
           <div
             key={idx}
-            className="p-2 border rounded bg-gray-50 dark:bg-gray-800"
+            className="p-2 border rounded bg-gray-50 "
           >
             {typeof item === "object" && item !== null ? (
               <ul className="list-none ml-2 space-y-1">
