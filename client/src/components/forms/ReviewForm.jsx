@@ -207,7 +207,7 @@ const ArraySection = ({
       {data.map((item, idx) => (
         <div
           key={idx}
-          className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-800 shadow-sm"
+          className="p-4 border rounded-lg bg-gray-50  shadow-sm"
         >
           {fieldOrder.length > 0
             ? fieldOrder.map((key) => {
@@ -294,7 +294,7 @@ const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
 
       <div className="space-y-8">
         {/* Render personal details array with ordered keys */}
-        <ArraySection
+        {/* <ArraySection
           title="Personal Details"
           data={
             Array.isArray(userData.personalDetails?.personalDetails)
@@ -303,11 +303,11 @@ const ReviewForm = ({ onBack, onSubmit, token, onDataReady }) => {
           }
           fieldOrder={personalFields}
           keyFormatter={changeDisplayMain}
-        />
+        /> */}
 
         {/* Other sections with normal object data */}
         <Section
-          title="Pers Details new"
+          title="Personal Details"
           data={userData.personalDetails}
           fieldOrder={personalFields}
         />
